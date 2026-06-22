@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: lingua-backend
+
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiry-seconds: ${JWT_EXPIRY_SECONDS:900}
+    refresh-expiry-days: ${REFRESH_TOKEN_EXPIRY_DAYS:30}
+  api:
+    claude-key: ${CLAUDE_API_KEY}
+    deepl-key: ${DEEPL_API_KEY}
+    verdict-key: ${VERDICT_API_KEY}
+  rate-limit:
+    rpm: ${RATE_LIMIT_RPM:20}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: when-authorized
