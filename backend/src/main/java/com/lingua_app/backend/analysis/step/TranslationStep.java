@@ -4,32 +4,29 @@ import com.anthropic.client.AnthropicClient;
 import com.anthropic.client.okhttp.AnthropicOkHttpClient;
 import com.anthropic.models.messages.MessageCreateParams;
 import com.anthropic.models.messages.Model;
-import com.deepl.api.QuotaExceededException;
+import com.deepl.api.DeepLClient;
 import com.deepl.api.TextResult;
-import com.deepl.api.Translator;
 import com.lingua_app.backend.AppProperties;
 import com.lingua_app.backend.analysis.pipeline.AnalysisContext;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TranslationStep {
+public class TranslationStep implements AnalysisStep {
 
     private final AppProperties appProperties;
+    private final TranslationStep self;
 
     // Self-injection allows Resilience4j AOP proxies to intercept callDeepL()
     // when invoked from run() — direct same-bean calls bypass Spring AOP.
-    @Autowired @Lazy
-    private TranslationStep self;
-
-    public TranslationStep(AppProperties appProperties) {
+    public TranslationStep(AppProperties appProperties, @Lazy TranslationStep self) {
         this.appProperties = appProperties;
+        this.self = self;
     }
 
-    public void run(AnalysisContext ctx) {
+    public void run(AnalysisContext ctx) throws Exception {
         // English text does not need translation; pass through to avoid consuming DeepL quota.
         if ("lat".equals(ctx.getDetectedLanguage())) {
             ctx.setTranslation(ctx.getText());
@@ -41,8 +38,8 @@ public class TranslationStep {
     @Retry(name = "deepl")
     @CircuitBreaker(name = "deepl", fallbackMethod = "fallbackToClaude")
     public String callDeepL(String text, String detectedLanguage) throws Exception {
-        Translator translator = new Translator(appProperties.getApi().getDeeplKey());
-        TextResult result = translator.translateText(text, toDeepLCode(detectedLanguage), "EN-US");
+        DeepLClient client = new DeepLClient(appProperties.getApi().getDeeplKey());
+        TextResult result = client.translateText(text, toDeepLCode(detectedLanguage), "EN-US");
         return result.getText();
     }
 

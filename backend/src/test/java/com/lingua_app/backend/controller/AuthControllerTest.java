@@ -11,8 +11,8 @@ import com.lingua_app.backend.security.UserDetailsServiceImpl;
 import com.lingua_app.backend.service.IAuthService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,15 +37,15 @@ class AuthControllerTest {
     private ObjectMapper objectMapper;
 
     // The service under test — mocked so we control what it returns or throws.
-    @MockBean
+    @MockitoBean
     private IAuthService authService;
 
     // SecurityConfig wires in JwtAuthFilter, which depends on these two beans.
     // They must be mocked or @WebMvcTest will fail to build the application context.
-    @MockBean
+    @MockitoBean
     private JwtService jwtService;
 
-    @MockBean
+    @MockitoBean
     private UserDetailsServiceImpl userDetailsService;
 
     // --- T015 test cases ---

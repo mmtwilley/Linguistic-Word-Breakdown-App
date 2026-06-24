@@ -7,7 +7,9 @@ import com.anthropic.models.messages.Message;
 import com.anthropic.models.messages.MessageCreateParams;
 import com.anthropic.models.messages.Model;
 import com.anthropic.models.messages.Tool;
+import com.anthropic.models.messages.ToolChoice;
 import com.anthropic.models.messages.ToolChoiceTool;
+import com.anthropic.models.messages.ToolUseBlock;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lingua_app.backend.AppProperties;
@@ -15,11 +17,9 @@ import com.lingua_app.backend.analysis.pipeline.AnalysisContext;
 import com.lingua_app.backend.analysis.pipeline.WordCard;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.stereotype.Component;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,20 +27,24 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class ClaudeStep {
+public class ClaudeStep implements AnalysisStep {
 
     private final AppProperties appProperties;
     private final ObjectMapper objectMapper;
+    private final ClaudeStep self; // Final field for explicit constructor injection
 
-    // Self-injection so Resilience4j AOP proxy intercepts callClaude() from run()
-    @Autowired @Lazy
-    private ClaudeStep self;
-
-    public ClaudeStep(AppProperties appProperties, ObjectMapper objectMapper) {
+    // Spring implicitly auto-wires single constructors
+    public ClaudeStep(AppProperties appProperties, 
+                      ObjectMapper objectMapper, 
+                      ObjectProvider<ClaudeStep> selfProvider) {
         this.appProperties = appProperties;
         this.objectMapper = objectMapper;
+        // Lazily retrieves the AOP proxy to avoid unresolvable circular dependency cycles
+        this.self = selfProvider.getObject();
     }
 
+
+    @Override
     public void run(AnalysisContext ctx) {
         List<WordCard> knownWords = ctx.getWords().stream()
                 .filter(w -> w.getGloss() != null)
@@ -71,10 +75,9 @@ public class ClaudeStep {
                         .model(Model.of("claude-sonnet-4-6"))
                         .maxTokens(2048L)
                         .addTool(buildTool(lang))
-                        .toolChoice(ToolChoiceTool.builder()
-                                .type(ToolChoiceTool.Type.TOOL)
+                        .toolChoice(ToolChoice.ofTool(ToolChoiceTool.builder()
                                 .name("analyze_words")
-                                .build())
+                                .build()))
                         .addUserMessage(buildPrompt(lang, ctx.getText(),
                                 ctx.getTranslation(), knownWords, unresolvedSurfaces))
                         .build()
@@ -93,10 +96,8 @@ public class ClaudeStep {
                 .map(WordCard::getSurface)
                 .collect(Collectors.toSet());
 
-        // Remove entries that Claude is now providing
         ctx.getWords().removeIf(w -> claudeSurfaces.contains(w.getSurface()));
 
-        // Restore pre-computed readings into Claude's results, then add them
         claudeWords.forEach(w -> {
             String reading = savedReadings.get(w.getSurface());
             if (reading != null) w.setRomanization(reading);
@@ -105,7 +106,6 @@ public class ClaudeStep {
     }
 
     // Resilience4j calls this when the circuit is open or retries are exhausted.
-    // We record the failure in partialErrors and let the pipeline continue.
     public void fallbackClaude(AnalysisContext ctx,
                                List<String> unresolvedSurfaces,
                                List<WordCard> knownWords,
@@ -157,8 +157,8 @@ public class ClaudeStep {
                 .description("Return morphological and semantic analysis for each unresolved "
                         + "surface token. Do not include tokens already listed as resolved.")
                 .inputSchema(Tool.InputSchema.builder()
-                        .type(Tool.InputSchema.Type.OBJECT)
-                        .properties(JsonValue.from(schemaProps))
+                        .type(JsonValue.from("object"))
+                        .putAdditionalProperty("properties", JsonValue.from(schemaProps))
                         .build())
                 .build();
     }
@@ -205,7 +205,6 @@ public class ClaudeStep {
         if ("kor".equals(lang) || "jpn".equals(lang)) {
             sb.append(" Include particles and endings where applicable.");
         }
-        // Romanization is always excluded — generated locally by RomanizationStep.
 
         return sb.toString();
     }
@@ -214,30 +213,38 @@ public class ClaudeStep {
     // Response parsing
     // -------------------------------------------------------------------------
 
-    @SuppressWarnings("unchecked")
     private List<WordCard> parseToolResponse(Message message) {
         return message.content().stream()
                 .filter(b -> b.isToolUse())
                 .map(b -> b.asToolUse())
                 .filter(tu -> "analyze_words".equals(tu.name()))
                 .findFirst()
-                .map(tu -> {
-                    try {
-                        // JsonValue is Jackson-serializable in the Anthropic SDK
-                        String json = objectMapper.writeValueAsString(tu.input());
-                        Map<String, Object> root = objectMapper.readValue(
-                                json, new TypeReference<>() {});
-                        List<Map<String, Object>> wordMaps =
-                                (List<Map<String, Object>>) root.get("words");
-                        if (wordMaps == null) return List.<WordCard>of();
-                        return wordMaps.stream()
-                                .map(this::mapToWordCard)
-                                .collect(Collectors.toCollection(ArrayList::new));
-                    } catch (Exception e) {
-                        return List.<WordCard>of();
-                    }
-                })
+                .map(this::extractWordCards)
                 .orElse(List.of());
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<WordCard> extractWordCards(ToolUseBlock tu) {
+        String json;
+        try {
+            json = objectMapper.writeValueAsString(tu._input());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to serialize Claude tool input", e);
+        }
+
+        Map<String, Object> root;
+        try {
+            root = objectMapper.readValue(json, new TypeReference<>() {});
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse Claude tool response JSON", e);
+        }
+
+        List<Map<String, Object>> wordMaps = (List<Map<String, Object>>) root.get("words");
+        if (wordMaps == null) return List.of();
+
+        return wordMaps.stream()
+                .map(this::mapToWordCard)
+                .toList();
     }
 
     private WordCard mapToWordCard(Map<String, Object> m) {
@@ -246,7 +253,6 @@ public class ClaudeStep {
                 .lemma((String) m.get("lemma"))
                 .pos((String) m.get("pos"))
                 .gloss((String) m.get("gloss"))
-                // romanization excluded — RomanizationStep generates it locally
                 .build();
     }
 }

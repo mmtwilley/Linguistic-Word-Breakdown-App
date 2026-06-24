@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 
 @Component
-public class DetectionStep {
+public class DetectionStep implements AnalysisStep {
 
     private static final Set<String> VALID_HINTS = Set.of("kor", "jpn", "cmn", "lat");
 

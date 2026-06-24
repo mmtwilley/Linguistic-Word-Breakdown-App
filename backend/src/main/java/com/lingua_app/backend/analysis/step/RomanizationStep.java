@@ -12,7 +12,7 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
 import org.springframework.stereotype.Component;
 
 @Component
-public class RomanizationStep {
+public class RomanizationStep implements AnalysisStep {
 
     private final Transliterator hangulToLatin;
     private final Transliterator katakanaToLatin;

@@ -31,7 +31,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
-public class DictionaryStep {
+public class DictionaryStep implements AnalysisStep {
 
     private static final String KRDICT_BASE  = "https://krdict.korean.go.kr/api/search";
     private static final String FREEDICT_BASE = "https://api.dictionaryapi.dev/api/v2/entries/en";
