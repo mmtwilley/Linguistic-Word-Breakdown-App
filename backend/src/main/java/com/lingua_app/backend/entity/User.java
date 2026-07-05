@@ -25,7 +25,7 @@ public class User {
 
     // unique = true adds a database-level UNIQUE constraint (backed by an index in Flyway migration).
     // nullable = false adds a NOT NULL constraint.
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, columnDefinition = "citext")
     private String email;
 
     // Stored as a BCrypt hash — the raw password never persists beyond the request.
