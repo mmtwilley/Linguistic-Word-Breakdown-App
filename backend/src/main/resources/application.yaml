@@ -44,3 +44,18 @@ management:
   endpoint:
     health:
       show-details: when-authorized
+
+---
+# Production profile: TLS termination at the application (constitution Principle II).
+# Activate with SPRING_PROFILES_ACTIVE=prod. The keystore path, password, and type
+# come from env vars so no certificate material is ever committed.
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+server:
+  ssl:
+    key-store: ${SSL_KEY_STORE}
+    key-store-password: ${SSL_KEY_STORE_PASSWORD}
+    key-store-type: ${SSL_KEY_STORE_TYPE:PKCS12}

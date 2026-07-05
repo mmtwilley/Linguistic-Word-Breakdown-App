@@ -55,15 +55,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // Only set authentication if none already exists — avoids overwriting auth
         // that might have been set by an earlier filter in the chain.
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            // Loading UserDetails confirms the account still exists and is active,
+            // even though the JWT signature already proved authenticity.
             UserDetails userDetails = userDetailsService.loadUserByUsername(
                     jwtService.extractEmail(token)
             );
 
             // UsernamePasswordAuthenticationToken with 3 args = authenticated principal.
-            // The second arg (credentials) is null because we don't store the password here —
-            // authentication was already confirmed by the JWT signature.
+            // The principal is the userId from the JWT "sub" claim (not the email), so
+            // Authentication.getName() yields the stable UUID — used downstream as the
+            // rate-limit bucket key and for any per-user resource ownership checks.
+            // Credentials are null because authentication was confirmed by the JWT signature.
             UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    new UsernamePasswordAuthenticationToken(
+                            jwtService.extractUserId(token).toString(),
+                            null,
+                            userDetails.getAuthorities());
 
             // Attaches request metadata (IP address, session ID) to the auth token,
             // useful for audit logging and security events.

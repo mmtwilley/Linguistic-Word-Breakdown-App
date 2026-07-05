@@ -4,8 +4,10 @@ import com.lingua_app.backend.security.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,18 +32,27 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+    private final Environment environment;
 
     // Comma-separated list of allowed origins, e.g. "https://app.example.com,https://admin.example.com".
     // Wildcard * is intentionally not supported — setAllowedOrigins() rejects it when credentials are enabled.
     @Value("${ALLOWED_ORIGINS:}")
     private String allowedOriginsRaw;
 
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter, Environment environment) {
         this.jwtAuthFilter = jwtAuthFilter;
+        this.environment = environment;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // Constitution Principle II: HTTPS is mandatory outside local development.
+        // With server.ssl.* active (prod profile), Tomcat's TLS connector already
+        // rejects plain-HTTP requests with 400; this rule additionally covers
+        // setups where TLS terminates at a proxy (honours X-Forwarded-Proto).
+        if (environment.matchesProfiles("prod")) {
+            http.redirectToHttps(Customizer.withDefaults());
+        }
         return http
                 // CSRF (Cross-Site Request Forgery) protection is disabled because this API
                 // is stateless — it uses JWT Bearer tokens, not session cookies. CSRF attacks
