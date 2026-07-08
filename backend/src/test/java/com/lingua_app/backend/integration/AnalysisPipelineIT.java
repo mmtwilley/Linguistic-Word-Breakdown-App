@@ -1,6 +1,8 @@
 package com.lingua_app.backend.integration;
 
 import com.lingua_app.backend.analysis.pipeline.AnalysisContext;
+import com.lingua_app.backend.analysis.pipeline.Confidence;
+import com.lingua_app.backend.analysis.pipeline.IssueCode;
 import com.lingua_app.backend.analysis.pipeline.WordCard;
 import com.lingua_app.backend.analysis.step.ClaudeStep;
 import com.lingua_app.backend.analysis.step.DictionaryStep;
@@ -30,6 +32,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
 
 // Full pipeline integration test against real PostgreSQL + Redis.
 // TranslationStep, DictionaryStep, and ClaudeStep are mocked to avoid
@@ -47,6 +50,7 @@ import static org.mockito.Mockito.doAnswer;
                 "management.health.redis.enabled=false"
         }
 )
+@org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate
 @Testcontainers
 class AnalysisPipelineIT {
 
@@ -158,5 +162,70 @@ class AnalysisPipelineIT {
         assertThat(response.getBody().words()).isNotEmpty();
         assertThat(response.getBody().words())
                 .allSatisfy(word -> assertThat(word.romanization()).isNull());
+    }
+
+    // Feature 002 (T014): every response carries confidence + issues; a synthesized
+    // stage failure (mocked ClaudeStep throws → pipeline catch → partialErrors)
+    // yields HTTP 200 with confidence "low" and a STAGE_FAILED issue.
+
+    @Test
+    void analyze_everyResponse_carriesConfidenceAndIssues() throws Exception {
+        doAnswer(inv -> {
+            AnalysisContext ctx = inv.getArgument(0);
+            ctx.setTranslation("Today the weather.");
+            return null;
+        }).when(translationStep).run(any());
+
+        doAnswer(inv -> {
+            AnalysisContext ctx = inv.getArgument(0);
+            ctx.getWords().add(WordCard.builder().surface("오늘").lemma("오늘").gloss("today").build());
+            ctx.getWords().add(WordCard.builder().surface("날씨").lemma("날씨").gloss("weather").build());
+            return null;
+        }).when(dictionaryStep).run(any());
+
+        String token = registerAndLogin("pipeline_val@example.com", "Password123!");
+
+        ResponseEntity<AnalysisResponse> response = restTemplate.postForEntity(
+                "/api/analyze",
+                authenticatedRequest(token, new AnalysisRequest("오늘 날씨", null)),
+                AnalysisResponse.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().confidence()).isNotNull();
+        assertThat(response.getBody().issues()).isNotNull();
+    }
+
+    @Test
+    void analyze_synthesizedStageFailure_returns200WithLowConfidenceAndStageFailed() throws Exception {
+        doAnswer(inv -> {
+            AnalysisContext ctx = inv.getArgument(0);
+            ctx.setTranslation("Today the weather.");
+            return null;
+        }).when(translationStep).run(any());
+
+        doAnswer(inv -> {
+            AnalysisContext ctx = inv.getArgument(0);
+            // Fully cover the input so STAGE_FAILED is the only expected issue.
+            ctx.getWords().add(WordCard.builder().surface("오늘").lemma("오늘").gloss("today").build());
+            ctx.getWords().add(WordCard.builder().surface("날씨").lemma("날씨").gloss("weather").build());
+            return null;
+        }).when(dictionaryStep).run(any());
+
+        doThrow(new RuntimeException("synthesized Claude outage"))
+                .when(claudeStep).run(any());
+
+        String token = registerAndLogin("pipeline_degraded@example.com", "Password123!");
+
+        ResponseEntity<AnalysisResponse> response = restTemplate.postForEntity(
+                "/api/analyze",
+                authenticatedRequest(token, new AnalysisRequest("오늘 날씨", null)),
+                AnalysisResponse.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().confidence()).isEqualTo(Confidence.LOW);
+        assertThat(response.getBody().issues())
+                .anySatisfy(issue -> assertThat(issue.code()).isEqualTo(IssueCode.STAGE_FAILED));
     }
 }

@@ -17,4 +17,8 @@ public class AnalysisContext {
     private String translation;
     private List<WordCard> words = new ArrayList<>();
     private Map<String, String> partialErrors = new HashMap<>();
+    private List<ValidationIssue> validationIssues = new ArrayList<>();
+    // Set exactly once by ValidationStep; null means validation itself crashed,
+    // which AnalysisService defensively maps to LOW.
+    private Confidence confidence;
 }

@@ -6,6 +6,7 @@ import com.lingua_app.backend.analysis.step.DetectionStep;
 import com.lingua_app.backend.analysis.step.DictionaryStep;
 import com.lingua_app.backend.analysis.step.RomanizationStep;
 import com.lingua_app.backend.analysis.step.TranslationStep;
+import com.lingua_app.backend.analysis.step.ValidationStep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -23,13 +24,16 @@ public class AnalysisPipeline {
                             TranslationStep translationStep,
                             DictionaryStep dictionaryStep,
                             ClaudeStep claudeStep,
-                            RomanizationStep romanizationStep) {
+                            RomanizationStep romanizationStep,
+                            ValidationStep validationStep) {
         this.steps = List.of(
             new StepDefinition("detection",    detectionStep),
             new StepDefinition("translation",  translationStep),
             new StepDefinition("dictionary",   dictionaryStep),
             new StepDefinition("claude",       claudeStep),
-            new StepDefinition("romanization", romanizationStep)
+            new StepDefinition("romanization", romanizationStep),
+            // Must run last: validates the finished card list (feature 002)
+            new StepDefinition("validation",   validationStep)
         );
     }
 

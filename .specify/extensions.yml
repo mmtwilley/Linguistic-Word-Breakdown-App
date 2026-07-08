@@ -1,4 +1,5 @@
-installed: []
+installed:
+- learn
 settings:
   auto_execute_hooks: true
 hooks:
@@ -121,6 +122,14 @@ hooks:
     optional: true
     prompt: Commit implementation changes?
     description: Auto-commit after implementation
+    condition: null
+  - extension: learn
+    command: speckit.learn.review
+    enabled: true
+    optional: true
+    priority: 10
+    prompt: Generate a learning guide from this implementation?
+    description: ''
     condition: null
   after_checklist:
   - extension: git

@@ -1,0 +1,640 @@
+[
+  {
+    "id": "kor-1",
+    "lang": "kor",
+    "text": "오늘 날씨가 정말 좋네요",
+    "ok": true,
+    "ms": 7459,
+    "response": {
+      "language": "kor",
+      "translation": "The weather is really nice today.",
+      "words": [
+        {
+          "surface": "오늘",
+          "lemma": "오늘",
+          "pos": "명사",
+          "gloss": "today",
+          "romanization": "oneul",
+          "ipa": null
+        },
+        {
+          "surface": "정말",
+          "lemma": "정말",
+          "pos": "명사",
+          "gloss": "fact",
+          "romanization": "jeongmal",
+          "ipa": null
+        },
+        {
+          "surface": "날씨가",
+          "lemma": "날씨",
+          "pos": "noun",
+          "gloss": "weather",
+          "romanization": "nalssiga",
+          "ipa": null
+        },
+        {
+          "surface": "좋네요",
+          "lemma": "좋다",
+          "pos": "verb",
+          "gloss": "to be good/nice",
+          "romanization": "johneyo",
+          "ipa": null
+        }
+      ],
+      "confidence": "medium",
+      "issues": [
+        {
+          "code": "CARDS_OUT_OF_ORDER",
+          "severity": "warning",
+          "surface": "날씨가",
+          "detail": "1 word card(s) appear out of sentence order."
+        }
+      ]
+    }
+  },
+  {
+    "id": "kor-2",
+    "lang": "kor",
+    "text": "저는 어제 친구와 같이 영화를 봤어요",
+    "ok": true,
+    "ms": 6855,
+    "response": {
+      "language": "kor",
+      "translation": "I went to see a movie with a friend yesterday.",
+      "words": [
+        {
+          "surface": "어제",
+          "lemma": "어제",
+          "pos": "명사",
+          "gloss": "yesterday",
+          "romanization": "eoje",
+          "ipa": null
+        },
+        {
+          "surface": "같이",
+          "lemma": "같이",
+          "pos": "부사",
+          "gloss": "together",
+          "romanization": "gat-i",
+          "ipa": null
+        },
+        {
+          "surface": "저는",
+          "lemma": "저",
+          "pos": "noun",
+          "gloss": "I (humble/polite first-person pronoun)",
+          "romanization": "jeoneun",
+          "ipa": null
+        },
+        {
+          "surface": "친구와",
+          "lemma": "친구",
+          "pos": "noun",
+          "gloss": "friend",
+          "romanization": "chinguwa",
+          "ipa": null
+        },
+        {
+          "surface": "영화를",
+          "lemma": "영화",
+          "pos": "noun",
+          "gloss": "movie, film",
+          "romanization": "yeonghwaleul",
+          "ipa": null
+        },
+        {
+          "surface": "봤어요",
+          "lemma": "보다",
+          "pos": "verb",
+          "gloss": "to see, to watch",
+          "romanization": "bwass-eoyo",
+          "ipa": null
+        }
+      ],
+      "confidence": "medium",
+      "issues": [
+        {
+          "code": "CARDS_OUT_OF_ORDER",
+          "severity": "warning",
+          "surface": "저는",
+          "detail": "2 word card(s) appear out of sentence order."
+        }
+      ]
+    }
+  },
+  {
+    "id": "kor-3",
+    "lang": "kor",
+    "text": "한국어를 배우는 것은 어렵지만 재미있어요",
+    "ok": true,
+    "ms": 6128,
+    "response": {
+      "language": "kor",
+      "translation": "Learning Korean is difficult but fun.",
+      "words": [
+        {
+          "surface": "배우는",
+          "lemma": "배우다",
+          "pos": "동사",
+          "gloss": "learn",
+          "romanization": "baeuneun",
+          "ipa": null
+        },
+        {
+          "surface": "한국어를",
+          "lemma": "한국어",
+          "pos": "noun",
+          "gloss": "Korean language",
+          "romanization": "hangug-eoleul",
+          "ipa": null
+        },
+        {
+          "surface": "것은",
+          "lemma": "것",
+          "pos": "noun",
+          "gloss": "thing; nominalizer",
+          "romanization": "geos-eun",
+          "ipa": null
+        },
+        {
+          "surface": "어렵지만",
+          "lemma": "어렵다",
+          "pos": "adjective",
+          "gloss": "difficult",
+          "romanization": "eolyeobjiman",
+          "ipa": null
+        },
+        {
+          "surface": "재미있어요",
+          "lemma": "재미있다",
+          "pos": "adjective",
+          "gloss": "fun; interesting",
+          "romanization": "jaemiiss-eoyo",
+          "ipa": null
+        }
+      ],
+      "confidence": "medium",
+      "issues": [
+        {
+          "code": "CARDS_OUT_OF_ORDER",
+          "severity": "warning",
+          "surface": "한국어를",
+          "detail": "1 word card(s) appear out of sentence order."
+        }
+      ]
+    }
+  },
+  {
+    "id": "jpn-1",
+    "lang": "jpn",
+    "text": "私は毎朝コーヒーを飲みます",
+    "ok": true,
+    "ms": 5994,
+    "response": {
+      "language": "jpn",
+      "translation": "I drink coffee every morning.",
+      "words": [
+        {
+          "surface": "私",
+          "lemma": "私",
+          "pos": "noun",
+          "gloss": "I, me (first-person pronoun)",
+          "romanization": "watashi",
+          "ipa": null
+        },
+        {
+          "surface": "は",
+          "lemma": "は",
+          "pos": "particle",
+          "gloss": "topic marker particle",
+          "romanization": "ha",
+          "ipa": null
+        },
+        {
+          "surface": "毎朝",
+          "lemma": "毎朝",
+          "pos": "noun",
+          "gloss": "every morning",
+          "romanization": "maiasa",
+          "ipa": null
+        },
+        {
+          "surface": "コーヒー",
+          "lemma": "コーヒー",
+          "pos": "noun",
+          "gloss": "coffee",
+          "romanization": "kōhī",
+          "ipa": null
+        },
+        {
+          "surface": "を",
+          "lemma": "を",
+          "pos": "particle",
+          "gloss": "direct object marker particle",
+          "romanization": "wo",
+          "ipa": null
+        },
+        {
+          "surface": "飲み",
+          "lemma": "飲む",
+          "pos": "verb",
+          "gloss": "to drink",
+          "romanization": "nomi",
+          "ipa": null
+        },
+        {
+          "surface": "ます",
+          "lemma": "ます",
+          "pos": "particle",
+          "gloss": "polite verb ending (non-past)",
+          "romanization": "masu",
+          "ipa": null
+        }
+      ],
+      "confidence": "high",
+      "issues": []
+    }
+  },
+  {
+    "id": "jpn-2",
+    "lang": "jpn",
+    "text": "昨日友達と映画を見に行きました",
+    "ok": true,
+    "ms": 8311,
+    "response": {
+      "language": "jpn",
+      "translation": "I went to see a movie with a friend yesterday.",
+      "words": [
+        {
+          "surface": "昨日",
+          "lemma": "昨日",
+          "pos": "noun",
+          "gloss": "yesterday",
+          "romanization": "kinou",
+          "ipa": null
+        },
+        {
+          "surface": "友達",
+          "lemma": "友達",
+          "pos": "noun",
+          "gloss": "friend(s)",
+          "romanization": "tomodachi",
+          "ipa": null
+        },
+        {
+          "surface": "と",
+          "lemma": "と",
+          "pos": "particle",
+          "gloss": "with; and (comitative/conjunctive particle)",
+          "romanization": "to",
+          "ipa": null
+        },
+        {
+          "surface": "映画",
+          "lemma": "映画",
+          "pos": "noun",
+          "gloss": "movie; film",
+          "romanization": "eiga",
+          "ipa": null
+        },
+        {
+          "surface": "を",
+          "lemma": "を",
+          "pos": "particle",
+          "gloss": "direct object marker",
+          "romanization": "wo",
+          "ipa": null
+        },
+        {
+          "surface": "見",
+          "lemma": "見る",
+          "pos": "verb",
+          "gloss": "to see; to watch",
+          "romanization": "mi",
+          "ipa": null
+        },
+        {
+          "surface": "に",
+          "lemma": "に",
+          "pos": "particle",
+          "gloss": "purpose marker (going to do something)",
+          "romanization": "ni",
+          "ipa": null
+        },
+        {
+          "surface": "行き",
+          "lemma": "行く",
+          "pos": "verb",
+          "gloss": "to go",
+          "romanization": "iki",
+          "ipa": null
+        },
+        {
+          "surface": "まし",
+          "lemma": "ます",
+          "pos": "verb",
+          "gloss": "polite auxiliary verb (masu-stem)",
+          "romanization": "mashi",
+          "ipa": null
+        },
+        {
+          "surface": "た",
+          "lemma": "た",
+          "pos": "particle",
+          "gloss": "past tense auxiliary",
+          "romanization": "ta",
+          "ipa": null
+        }
+      ],
+      "confidence": "high",
+      "issues": []
+    }
+  },
+  {
+    "id": "jpn-3",
+    "lang": "jpn",
+    "text": "日本語の勉強は難しいですが、楽しいです",
+    "ok": true,
+    "ms": 7159,
+    "response": {
+      "language": "jpn",
+      "translation": "Studying Japanese is difficult, but it's fun.",
+      "words": [
+        {
+          "surface": "日本語",
+          "lemma": "日本語",
+          "pos": "noun",
+          "gloss": "Japanese language",
+          "romanization": "nihongo",
+          "ipa": null
+        },
+        {
+          "surface": "の",
+          "lemma": "の",
+          "pos": "particle",
+          "gloss": "possessive/nominalizing particle",
+          "romanization": "no",
+          "ipa": null
+        },
+        {
+          "surface": "勉強",
+          "lemma": "勉強",
+          "pos": "noun",
+          "gloss": "study, studying",
+          "romanization": "benkyou",
+          "ipa": null
+        },
+        {
+          "surface": "は",
+          "lemma": "は",
+          "pos": "particle",
+          "gloss": "topic marker particle",
+          "romanization": "ha",
+          "ipa": null
+        },
+        {
+          "surface": "難しい",
+          "lemma": "難しい",
+          "pos": "adjective",
+          "gloss": "difficult, hard",
+          "romanization": "muzukashii",
+          "ipa": null
+        },
+        {
+          "surface": "です",
+          "lemma": "です",
+          "pos": "verb",
+          "gloss": "polite copula (is/am/are)",
+          "romanization": "desu",
+          "ipa": null
+        },
+        {
+          "surface": "が",
+          "lemma": "が",
+          "pos": "particle",
+          "gloss": "conjunction/contrast particle (but)",
+          "romanization": "ga",
+          "ipa": null
+        },
+        {
+          "surface": "楽しい",
+          "lemma": "楽しい",
+          "pos": "adjective",
+          "gloss": "fun, enjoyable",
+          "romanization": "tanoshii",
+          "ipa": null
+        },
+        {
+          "surface": "です",
+          "lemma": "です",
+          "pos": "verb",
+          "gloss": "polite copula (is/am/are)",
+          "romanization": "desu",
+          "ipa": null
+        }
+      ],
+      "confidence": "high",
+      "issues": []
+    }
+  },
+  {
+    "id": "cmn-1",
+    "lang": "cmn",
+    "text": "我昨天和朋友一起看了电影",
+    "ok": true,
+    "ms": 579,
+    "response": {
+      "language": "cmn",
+      "translation": "I went to see a movie with a friend yesterday.",
+      "words": [],
+      "confidence": "low",
+      "issues": [
+        {
+          "code": "EMPTY_ANALYSIS",
+          "severity": "error",
+          "surface": null,
+          "detail": "No word cards were produced for this text."
+        }
+      ]
+    }
+  },
+  {
+    "id": "cmn-2",
+    "lang": "cmn",
+    "text": "学习中文很有意思",
+    "ok": true,
+    "ms": 273,
+    "response": {
+      "language": "cmn",
+      "translation": "Learning Chinese is really interesting.",
+      "words": [],
+      "confidence": "low",
+      "issues": [
+        {
+          "code": "EMPTY_ANALYSIS",
+          "severity": "error",
+          "surface": null,
+          "detail": "No word cards were produced for this text."
+        }
+      ]
+    }
+  },
+  {
+    "id": "eng-1",
+    "lang": "eng",
+    "text": "The quick brown fox jumps over the lazy dog",
+    "ok": true,
+    "ms": 900,
+    "response": {
+      "language": "lat",
+      "translation": "The quick brown fox jumps over the lazy dog",
+      "words": [
+        {
+          "surface": "The",
+          "lemma": "the",
+          "pos": "adverb",
+          "gloss": "With a comparative or with more and a verb phrase, establishes a correlation with one or more other such comparatives.",
+          "romanization": null,
+          "ipa": null
+        },
+        {
+          "surface": "quick",
+          "lemma": "quick",
+          "pos": "noun",
+          "gloss": "Raw or sensitive flesh, especially that underneath finger and toe nails.",
+          "romanization": null,
+          "ipa": null
+        },
+        {
+          "surface": "brown",
+          "lemma": "brown",
+          "pos": "noun",
+          "gloss": "A colour like that of chocolate or coffee.",
+          "romanization": null,
+          "ipa": null
+        },
+        {
+          "surface": "fox",
+          "lemma": "fox",
+          "pos": "noun",
+          "gloss": "A red fox, small carnivore (Vulpes vulpes), related to dogs and wolves, with red or silver fur and a bushy tail.",
+          "romanization": null,
+          "ipa": null
+        },
+        {
+          "surface": "jumps",
+          "lemma": "jumps",
+          "pos": "noun",
+          "gloss": "The act of jumping; a leap; a spring; a bound.",
+          "romanization": null,
+          "ipa": null
+        },
+        {
+          "surface": "over",
+          "lemma": "over",
+          "pos": "noun",
+          "gloss": "A set of six legal balls bowled.",
+          "romanization": null,
+          "ipa": null
+        },
+        {
+          "surface": "the",
+          "lemma": "the",
+          "pos": "adverb",
+          "gloss": "With a comparative or with more and a verb phrase, establishes a correlation with one or more other such comparatives.",
+          "romanization": null,
+          "ipa": null
+        },
+        {
+          "surface": "lazy",
+          "lemma": "lazy",
+          "pos": "noun",
+          "gloss": "A lazy person.",
+          "romanization": null,
+          "ipa": null
+        },
+        {
+          "surface": "dog",
+          "lemma": "dog",
+          "pos": "noun",
+          "gloss": "A mammal, Canis familiaris or Canis lupus familiaris, that has been domesticated for thousands of years, of highly variable appearance due to human breeding.",
+          "romanization": null,
+          "ipa": null
+        }
+      ],
+      "confidence": "high",
+      "issues": []
+    }
+  },
+  {
+    "id": "eng-2",
+    "lang": "eng",
+    "text": "She couldn't have finished the report yesterday",
+    "ok": true,
+    "ms": 682,
+    "response": {
+      "language": "lat",
+      "translation": "She couldn't have finished the report yesterday",
+      "words": [
+        {
+          "surface": "She",
+          "lemma": "she",
+          "pos": "noun",
+          "gloss": "A female.",
+          "romanization": null,
+          "ipa": null
+        },
+        {
+          "surface": "have",
+          "lemma": "have",
+          "pos": "noun",
+          "gloss": "A wealthy or privileged person.",
+          "romanization": null,
+          "ipa": null
+        },
+        {
+          "surface": "finished",
+          "lemma": "finished",
+          "pos": "verb",
+          "gloss": "To complete (something).",
+          "romanization": null,
+          "ipa": null
+        },
+        {
+          "surface": "the",
+          "lemma": "the",
+          "pos": "adverb",
+          "gloss": "With a comparative or with more and a verb phrase, establishes a correlation with one or more other such comparatives.",
+          "romanization": null,
+          "ipa": null
+        },
+        {
+          "surface": "report",
+          "lemma": "report",
+          "pos": "noun",
+          "gloss": "A piece of information describing, or an account of certain events given or presented to someone, with the most common adpositions being by (referring to creator of the report) and on (referring to the subject).",
+          "romanization": null,
+          "ipa": null
+        },
+        {
+          "surface": "yesterday",
+          "lemma": "yesterday",
+          "pos": "noun",
+          "gloss": "The day immediately before today; one day ago.",
+          "romanization": null,
+          "ipa": null
+        }
+      ],
+      "confidence": "low",
+      "issues": [
+        {
+          "code": "INPUT_NOT_COVERED",
+          "severity": "error",
+          "surface": null,
+          "detail": "Parts of the input are missing from the word breakdown: couldn, t"
+        }
+      ]
+    }
+  }
+]

@@ -2,9 +2,11 @@ package com.lingua_app.backend.service;
 
 import com.lingua_app.backend.analysis.pipeline.AnalysisContext;
 import com.lingua_app.backend.analysis.pipeline.AnalysisPipeline;
+import com.lingua_app.backend.analysis.pipeline.Confidence;
 import com.lingua_app.backend.analysis.pipeline.WordCard;
 import com.lingua_app.backend.dto.AnalysisRequest;
 import com.lingua_app.backend.dto.AnalysisResponse;
+import com.lingua_app.backend.dto.ValidationIssueDto;
 import com.lingua_app.backend.dto.WordCardDto;
 import com.lingua_app.backend.exception.AppException;
 import io.github.bucket4j.Bucket;
@@ -50,7 +52,16 @@ public class AnalysisService {
                 .map(this::toDto)
                 .toList();
 
-        return new AnalysisResponse(ctx.getDetectedLanguage(), ctx.getTranslation(), words);
+        List<ValidationIssueDto> issues = ctx.getValidationIssues().stream()
+                .map(ValidationIssueDto::from)
+                .toList();
+
+        // Null confidence means ValidationStep itself crashed (pipeline caught it) —
+        // an unvalidated result must not present itself as trustworthy.
+        Confidence confidence = ctx.getConfidence() != null ? ctx.getConfidence() : Confidence.LOW;
+
+        return new AnalysisResponse(ctx.getDetectedLanguage(), ctx.getTranslation(), words,
+                confidence, issues);
     }
 
     private WordCardDto toDto(WordCard wc) {

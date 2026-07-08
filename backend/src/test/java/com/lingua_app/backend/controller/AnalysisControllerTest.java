@@ -1,8 +1,11 @@
 package com.lingua_app.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lingua_app.backend.analysis.pipeline.Confidence;
+import com.lingua_app.backend.analysis.pipeline.IssueCode;
 import com.lingua_app.backend.dto.AnalysisRequest;
 import com.lingua_app.backend.dto.AnalysisResponse;
+import com.lingua_app.backend.dto.ValidationIssueDto;
 import com.lingua_app.backend.dto.WordCardDto;
 import com.lingua_app.backend.exception.AppException;
 import com.lingua_app.backend.security.JwtService;
@@ -118,7 +121,9 @@ class AnalysisControllerTest {
                 List.of(
                         new WordCardDto("오늘", "오늘", "NOUN", "today", "oneul", null),
                         new WordCardDto("날씨", "날씨", "NOUN", "weather", "nalssiga", null)
-                )
+                ),
+                Confidence.HIGH,
+                List.of()
         );
         when(analysisService.analyze(any(), any())).thenReturn(mockResponse);
 
@@ -132,6 +137,38 @@ class AnalysisControllerTest {
                 .andExpect(jsonPath("$.words").isArray())
                 .andExpect(jsonPath("$.words.length()").value(2))
                 .andExpect(jsonPath("$.words[0].surface").value("오늘"))
-                .andExpect(jsonPath("$.words[0].romanization").value("oneul"));
+                .andExpect(jsonPath("$.words[0].romanization").value("oneul"))
+                .andExpect(jsonPath("$.confidence").value("high"))
+                .andExpect(jsonPath("$.issues").isArray())
+                .andExpect(jsonPath("$.issues").isEmpty());
+    }
+
+    @Test
+    void analyze_degradedResult_serializesConfidenceAndIssueShape() throws Exception {
+        authenticateAs("testUser");
+        AnalysisResponse mockResponse = new AnalysisResponse(
+                "cmn",
+                "Learning Chinese is really interesting.",
+                List.of(),
+                Confidence.LOW,
+                List.of(new ValidationIssueDto(
+                        IssueCode.EMPTY_ANALYSIS,
+                        ValidationIssueDto.Severity.ERROR,
+                        null,
+                        "No word cards were produced for this text."))
+        );
+        when(analysisService.analyze(any(), any())).thenReturn(mockResponse);
+
+        mockMvc.perform(post("/api/analyze")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(
+                                new AnalysisRequest("学习中文很有意思", null))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.confidence").value("low"))
+                .andExpect(jsonPath("$.issues.length()").value(1))
+                .andExpect(jsonPath("$.issues[0].code").value("EMPTY_ANALYSIS"))
+                .andExpect(jsonPath("$.issues[0].severity").value("error"))
+                .andExpect(jsonPath("$.issues[0].surface").doesNotExist())
+                .andExpect(jsonPath("$.issues[0].detail").isNotEmpty());
     }
 }

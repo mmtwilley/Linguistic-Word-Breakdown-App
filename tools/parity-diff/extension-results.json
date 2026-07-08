@@ -1,0 +1,646 @@
+[
+  {
+    "id": "kor-1",
+    "lang": "kor",
+    "text": "오늘 날씨가 정말 좋네요",
+    "ok": true,
+    "ms": 5344,
+    "attempts": 1,
+    "response": {
+      "tokens": [
+        {
+          "word": "오늘",
+          "lemma": "오늘",
+          "pos": "noun",
+          "meaning": "today",
+          "romanization": "oneul"
+        },
+        {
+          "word": "날씨가",
+          "lemma": "날씨",
+          "pos": "noun",
+          "meaning": "weather",
+          "particles": [
+            {
+              "form": "가",
+              "type": "subject",
+              "meaning": "marks 날씨 as the subject of the sentence"
+            }
+          ],
+          "romanization": "nalssiga"
+        },
+        {
+          "word": "정말",
+          "lemma": "정말",
+          "pos": "adv",
+          "meaning": "really, truly",
+          "romanization": "jeongmal"
+        },
+        {
+          "word": "좋네요",
+          "lemma": "좋다",
+          "pos": "adj",
+          "meaning": "good, nice",
+          "endings": [
+            {
+              "form": "네요",
+              "type": "sentence-final",
+              "meaning": "expresses the speaker's mild surprise or new realization, with polite speech level"
+            }
+          ],
+          "romanization": "jotneyo"
+        }
+      ],
+      "translation": "The weather is really nice today."
+    }
+  },
+  {
+    "id": "kor-2",
+    "lang": "kor",
+    "text": "저는 어제 친구와 같이 영화를 봤어요",
+    "ok": true,
+    "ms": 16502,
+    "attempts": 2,
+    "response": {
+      "tokens": [
+        {
+          "word": "저는",
+          "lemma": "저",
+          "pos": "pron",
+          "meaning": "I (humble form)",
+          "particles": [
+            {
+              "form": "는",
+              "type": "topic",
+              "meaning": "marks 저 as the topic of the sentence"
+            }
+          ],
+          "romanization": "jeoneun"
+        },
+        {
+          "word": "어제",
+          "lemma": "어제",
+          "pos": "adv",
+          "meaning": "yesterday",
+          "romanization": "eoje"
+        },
+        {
+          "word": "친구와",
+          "lemma": "친구",
+          "pos": "noun",
+          "meaning": "friend",
+          "particles": [
+            {
+              "form": "와",
+              "type": "other-particle",
+              "meaning": "comitative particle meaning 'with' (used after vowel-ending nouns)"
+            }
+          ],
+          "romanization": "chinguwa"
+        },
+        {
+          "word": "같이",
+          "lemma": "같이",
+          "pos": "adv",
+          "meaning": "together, alike",
+          "romanization": "gati"
+        },
+        {
+          "word": "영화를",
+          "lemma": "영화",
+          "pos": "noun",
+          "meaning": "movie, film",
+          "particles": [
+            {
+              "form": "를",
+              "type": "object",
+              "meaning": "marks 영화 as the direct object (used after vowel-ending nouns)"
+            }
+          ],
+          "romanization": "yeonghwareul"
+        },
+        {
+          "word": "봤어요",
+          "lemma": "보다",
+          "pos": "verb",
+          "meaning": "to watch, to see",
+          "endings": [
+            {
+              "form": "았",
+              "type": "other-ending",
+              "meaning": "past tense marker"
+            },
+            {
+              "form": "어요",
+              "type": "sentence-final",
+              "meaning": "polite informal sentence-final ending"
+            }
+          ],
+          "romanization": "bwateoyo"
+        }
+      ],
+      "translation": "I went to see a movie with a friend yesterday."
+    }
+  },
+  {
+    "id": "kor-3",
+    "lang": "kor",
+    "text": "한국어를 배우는 것은 어렵지만 재미있어요",
+    "ok": true,
+    "ms": 8162,
+    "attempts": 1,
+    "response": {
+      "tokens": [
+        {
+          "word": "한국어를",
+          "lemma": "한국어",
+          "pos": "noun",
+          "meaning": "Korean language",
+          "particles": [
+            {
+              "form": "를",
+              "type": "object",
+              "meaning": "marks 한국어 as the object of 배우다"
+            }
+          ],
+          "romanization": "hangukeoreul"
+        },
+        {
+          "word": "배우는",
+          "lemma": "배우다",
+          "pos": "verb",
+          "meaning": "to learn",
+          "endings": [
+            {
+              "form": "는",
+              "type": "attributive",
+              "meaning": "present attributive ending, nominalizing the verb phrase to modify the following noun"
+            }
+          ],
+          "romanization": "baeuneun"
+        },
+        {
+          "word": "것은",
+          "lemma": "것",
+          "pos": "noun",
+          "meaning": "thing; nominalizer",
+          "particles": [
+            {
+              "form": "은",
+              "type": "topic",
+              "meaning": "marks 것 (the act of learning) as the topic of the sentence"
+            }
+          ],
+          "romanization": "geoteun"
+        },
+        {
+          "word": "어렵지만",
+          "lemma": "어렵다",
+          "pos": "adj",
+          "meaning": "difficult, hard",
+          "endings": [
+            {
+              "form": "지만",
+              "type": "connective",
+              "meaning": "concessive connective: 'but / although', contrasting withclause"
+            }
+          ],
+          "romanization": "eoryeopjiman"
+        },
+        {
+          "word": "재미있어요",
+          "lemma": "재미있다",
+          "pos": "adj",
+          "meaning": "fun, interesting",
+          "endings": [
+            {
+              "form": "어요",
+              "type": "sentence-final",
+              "meaning": "polite informal sentence-final ending (present tense)"
+            }
+          ],
+          "romanization": "jaemiiteoyo"
+        }
+      ],
+      "translation": "Learning Korean is difficult but fun."
+    }
+  },
+  {
+    "id": "jpn-1",
+    "lang": "jpn",
+    "text": "私は毎朝コーヒーを飲みます",
+    "ok": true,
+    "ms": 3949,
+    "attempts": 1,
+    "response": {
+      "tokens": [
+        {
+          "word": "私",
+          "lemma": "私",
+          "pos": "pron",
+          "meaning": "I, me",
+          "romanization": "watashi"
+        },
+        {
+          "word": "は",
+          "lemma": "は",
+          "pos": "other",
+          "meaning": "topic marker particle",
+          "romanization": "wa"
+        },
+        {
+          "word": "毎朝",
+          "lemma": "毎朝",
+          "pos": "noun",
+          "meaning": "every morning",
+          "romanization": "maiasa"
+        },
+        {
+          "word": "コーヒー",
+          "lemma": "コーヒー",
+          "pos": "noun",
+          "meaning": "coffee",
+          "romanization": "kōhī"
+        },
+        {
+          "word": "を",
+          "lemma": "を",
+          "pos": "other",
+          "meaning": "object marker particle",
+          "romanization": "wo"
+        },
+        {
+          "word": "飲みます",
+          "lemma": "飲む",
+          "pos": "verb",
+          "meaning": "to drink",
+          "romanization": "nomimasu"
+        }
+      ],
+      "translation": "I drink coffee every morning."
+    }
+  },
+  {
+    "id": "jpn-2",
+    "lang": "jpn",
+    "text": "昨日友達と映画を見に行きました",
+    "ok": true,
+    "ms": 4805,
+    "attempts": 1,
+    "response": {
+      "tokens": [
+        {
+          "word": "昨日",
+          "lemma": "昨日",
+          "pos": "noun",
+          "meaning": "yesterday",
+          "romanization": "kinō"
+        },
+        {
+          "word": "友達",
+          "lemma": "友達",
+          "pos": "noun",
+          "meaning": "friend(s)",
+          "romanization": "tomodachi"
+        },
+        {
+          "word": "と",
+          "lemma": "と",
+          "pos": "prep",
+          "meaning": "with (particle)",
+          "romanization": "to"
+        },
+        {
+          "word": "映画",
+          "lemma": "映画",
+          "pos": "noun",
+          "meaning": "movie, film",
+          "romanization": "eiga"
+        },
+        {
+          "word": "を",
+          "lemma": "を",
+          "pos": "prep",
+          "meaning": "object marker (particle)",
+          "romanization": "wo"
+        },
+        {
+          "word": "見に",
+          "lemma": "見る",
+          "pos": "verb",
+          "meaning": "to see, watch",
+          "romanization": "mi ni"
+        },
+        {
+          "word": "行きました",
+          "lemma": "行く",
+          "pos": "verb",
+          "meaning": "went (past polite)",
+          "romanization": "ikimashita"
+        }
+      ],
+      "translation": "I went to see a movie with a friend yesterday."
+    }
+  },
+  {
+    "id": "jpn-3",
+    "lang": "jpn",
+    "text": "日本語の勉強は難しいですが、楽しいです",
+    "ok": true,
+    "ms": 6465,
+    "attempts": 1,
+    "response": {
+      "tokens": [
+        {
+          "word": "日本語",
+          "lemma": "日本語",
+          "pos": "noun",
+          "meaning": "Japanese language",
+          "romanization": "nihongo"
+        },
+        {
+          "word": "の",
+          "lemma": "の",
+          "pos": "other",
+          "meaning": "possessive/nominalizing particle",
+          "romanization": "no"
+        },
+        {
+          "word": "勉強",
+          "lemma": "勉強",
+          "pos": "noun",
+          "meaning": "study, learning",
+          "romanization": "benkyou"
+        },
+        {
+          "word": "は",
+          "lemma": "は",
+          "pos": "other",
+          "meaning": "topic marker particle",
+          "romanization": "wa"
+        },
+        {
+          "word": "難しい",
+          "lemma": "難しい",
+          "pos": "adj",
+          "meaning": "difficult, hard",
+          "romanization": "muzukashii"
+        },
+        {
+          "word": "です",
+          "lemma": "です",
+          "pos": "other",
+          "meaning": "polite copula (is/am/are)",
+          "romanization": "desu"
+        },
+        {
+          "word": "が",
+          "lemma": "が",
+          "pos": "conj",
+          "meaning": "but, however",
+          "romanization": "ga"
+        },
+        {
+          "word": "楽しい",
+          "lemma": "楽しい",
+          "pos": "adj",
+          "meaning": "fun, enjoyable",
+          "ration": "tanoshii"
+        },
+        {
+          "word": "です",
+          "lemma": "です",
+          "pos": "other",
+          "meaning": "polite copula (is/am/are)",
+          "romanization": "desu"
+        }
+      ],
+      "translation": "Studying Japanese is difficult, but it's fun."
+    }
+  },
+  {
+    "id": "cmn-1",
+    "lang": "cmn",
+    "text": "我昨天和朋友一起看了电影",
+    "ok": true,
+    "ms": 4518,
+    "attempts": 1,
+    "response": {
+      "tokens": [
+        {
+          "word": "我",
+          "lemma": "我",
+          "pos": "pron",
+          "meaning": "I, me",
+          "romanization": "wǒ"
+        },
+        {
+          "word": "昨天",
+          "lemma": "昨天",
+          "pos": "noun",
+          "meaning": "yesterday",
+          "romanization": "zuótiān"
+        },
+        {
+          "word": "和",
+          "lemma": "和",
+          "pos": "prep",
+          "meaning": "with, and",
+          "romanization": "hé"
+        },
+        {
+          "word": "朋友",
+          "lemma": "朋友",
+          "pos": "noun",
+          "meaning": "friend",
+          "romanization": "péngyou"
+        },
+        {
+          "word": "一起",
+          "lemma": "一起",
+          "pos": "adv",
+          "meaning": "together",
+          "romanization": "yīqǐ"
+        },
+        {
+          "word": "看了",
+          "lemma": "看",
+          "pos": "verb",
+          "meaning": "watched, looked at",
+          "romanization": "kàn le"
+        },
+        {
+          "word": "电影",
+          "lemma": "电影",
+          "pos": "noun",
+          "meaning": "movie, film",
+          "romanization": "diànyǐng"
+        }
+      ],
+      "translation": "I went to see a movie with a friend yesterday."
+    }
+  },
+  {
+    "id": "cmn-2",
+    "lang": "cmn",
+    "text": "学习中文很有意思",
+    "ok": true,
+    "ms": 2888,
+    "attempts": 1,
+    "response": {
+      "tokens": [
+        {
+          "word": "学习",
+          "lemma": "学习",
+          "pos": "verb",
+          "meaning": "to study, to learn",
+          "romanization": "xuéxí"
+        },
+        {
+          "word": "中文",
+          "lemma": "中文",
+          "pos": "noun",
+          "meaning": "Chinese language",
+          "romanization": "Zhōngwén"
+        },
+        {
+          "word": "很",
+          "lemma": "很",
+          "pos": "adv",
+          "meaning": "very",
+          "romanization": "hěn"
+        },
+        {
+          "word": "有意思",
+          "lemma": "有意思",
+          "pos": "adj",
+          "meaning": "interesting, fun",
+          "romanization": "yǒu yìsi"
+        }
+      ],
+      "translation": "Learning Chinese is really interesting."
+    }
+  },
+  {
+    "id": "eng-1",
+    "lang": "eng",
+    "text": "The quick brown fox jumps over the lazy dog",
+    "ok": true,
+    "ms": 12362,
+    "attempts": 2,
+    "response": {
+      "tokens": [
+        {
+          "word": "The",
+          "lemma": "the",
+          "pos": "det",
+          "meaning": "definite article"
+        },
+        {
+          "word": "quick",
+          "lemma": "quick",
+          "pos": "adj",
+          "meaning": "fast, speedy"
+        },
+        {
+          "word": "brown",
+          "lemma": "brown",
+          "pos": "adj",
+          "meaning": "dark orange color"
+        },
+        {
+          "word": "fox",
+          "lemma": "fox",
+          "pos": "noun",
+          "meaning": "a wild canine animal"
+        },
+        {
+          "word": "jumps",
+          "lemma": "jump",
+          "pos": "verb",
+          "meaning": "leaps into the air"
+        },
+        {
+          "word": "over",
+          "lemma": "over",
+          "pos": "prep",
+          "meaning": "above and across"
+        },
+        {
+          "word": "the",
+          "lemma": "the",
+          "pos": "det",
+          "meaning": "definite article"
+        },
+        {
+          "word": "lazy",
+          "lemma": "lazy",
+          "pos": "adj",
+          "meaning": "unwilling to work"
+        },
+        {
+          "word": "dog",
+          "lemma": "dog",
+          "pos": "noun",
+          "meaning": "a domestic canine"
+        }
+      ],
+      "translation": "The quick brown fox jumps over the lazy dog."
+    }
+  },
+  {
+    "id": "eng-2",
+    "lang": "eng",
+    "text": "She couldn't have finished the report yesterday",
+    "ok": true,
+    "ms": 3965,
+    "attempts": 1,
+    "response": {
+      "tokens": [
+        {
+          "word": "She",
+          "lemma": "she",
+          "pos": "pron",
+          "meaning": "third person singular female"
+        },
+        {
+          "word": "couldn't",
+          "lemma": "can",
+          "pos": "verb",
+          "meaning": "past negative modal verb"
+        },
+        {
+          "word": "have",
+          "lemma": "have",
+          "pos": "verb",
+          "meaning": "auxiliary for perfect aspect"
+        },
+        {
+          "word": "finished",
+          "lemma": "finish",
+          "pos": "verb",
+          "meaning": "completed, brought to end"
+        },
+        {
+          "word": "the",
+          "lemma": "the",
+          "pos": "det",
+          "meaning": "definite article"
+        },
+        {
+          "word": "report",
+          "lemma": "report",
+          "pos": "noun",
+          "meaning": "formal written document"
+        },
+        {
+          "word": "yesterday",
+          "lemma": "yesterday",
+          "pos": "adv",
+          "meaning": "the day before today"
+        }
+      ],
+      "translation": "She couldn't have finished the report yesterday."
+    }
+  }
+]

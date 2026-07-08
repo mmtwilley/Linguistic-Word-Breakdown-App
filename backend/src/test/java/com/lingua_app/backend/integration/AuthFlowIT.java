@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 // Full end-to-end auth flow against a real PostgreSQL database.
 // Redis is not involved in the auth flow — the health indicator is disabled
 // so /actuator/health returns 200 (UP) rather than 503 (DOWN) during tests.
+@org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {

@@ -1,0 +1,12 @@
+[
+  { "id": "kor-1", "lang": "kor", "text": "오늘 날씨가 정말 좋네요" },
+  { "id": "kor-2", "lang": "kor", "text": "저는 어제 친구와 같이 영화를 봤어요" },
+  { "id": "kor-3", "lang": "kor", "text": "한국어를 배우는 것은 어렵지만 재미있어요" },
+  { "id": "jpn-1", "lang": "jpn", "text": "私は毎朝コーヒーを飲みます" },
+  { "id": "jpn-2", "lang": "jpn", "text": "昨日友達と映画を見に行きました" },
+  { "id": "jpn-3", "lang": "jpn", "text": "日本語の勉強は難しいですが、楽しいです" },
+  { "id": "cmn-1", "lang": "cmn", "text": "我昨天和朋友一起看了电影" },
+  { "id": "cmn-2", "lang": "cmn", "text": "学习中文很有意思" },
+  { "id": "eng-1", "lang": "eng", "text": "The quick brown fox jumps over the lazy dog" },
+  { "id": "eng-2", "lang": "eng", "text": "She couldn't have finished the report yesterday" }
+]
