@@ -1,0 +1,15 @@
+{
+  "name": "parity-diff",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Diff extension (Claude-direct) word cards against backend tiered-pipeline word cards",
+  "scripts": {
+    "backend": "node run-backend.mjs",
+    "extension": "node run-extension.mjs",
+    "diff": "node diff.mjs"
+  },
+  "dependencies": {
+    "undici": "^5.28.4"
+  }
+}

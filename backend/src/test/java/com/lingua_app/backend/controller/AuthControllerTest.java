@@ -33,8 +33,7 @@ class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     // The service under test — mocked so we control what it returns or throws.
     @MockitoBean

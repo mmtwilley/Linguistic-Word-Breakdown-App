@@ -9,6 +9,8 @@ import org.apache.lucene.analysis.ja.tokenattributes.BaseFormAttribute;
 import org.apache.lucene.analysis.ja.tokenattributes.PartOfSpeechAttribute;
 import org.apache.lucene.analysis.ja.tokenattributes.ReadingAttribute;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -32,6 +34,8 @@ import java.util.regex.Pattern;
 
 @Component
 public class DictionaryStep implements AnalysisStep {
+
+    private static final Logger log = LoggerFactory.getLogger(DictionaryStep.class);
 
     private static final String KRDICT_BASE  = "https://krdict.korean.go.kr/api/search";
     private static final String FREEDICT_BASE = "https://api.dictionaryapi.dev/api/v2/entries/en";
@@ -165,18 +169,23 @@ public class DictionaryStep implements AnalysisStep {
             String surface = token.replaceAll(
                     "[^\\uAC00-\\uD7A3\\u1100-\\u11FF\\u3130-\\u318F]", "");
             if (surface.isBlank()) continue;
+            WordCard card = null;
             try {
                 String xml = restClient.get()
                         .uri(KRDICT_BASE + "?key={key}&q={word}&part=word&translated=y&trans_lang=1",
                                 appProperties.getApi().getVerdictKey(), surface)
                         .retrieve()
                         .body(String.class);
-                if (xml == null) continue;
-                WordCard card = parseKrdictXml(surface, xml);
-                if (card != null) result.add(card);
-            } catch (Exception ignored) {
-                // Network or parse failure — skip token; ClaudeStep handles it
+                if (xml != null) card = parseKrdictXml(surface, xml);
+                log.debug("Krdict lookup: surface={}, resolved={}", surface, card != null);
+            } catch (Exception e) {
+                // Network or parse failure — fall through to surface-only card
+                log.debug("Krdict lookup failed: surface={}, error={}: {}",
+                        surface, e.getClass().getSimpleName(), e.getMessage());
             }
+            // Unresolved tokens must still appear in ctx.words (gloss == null)
+            // so ClaudeStep can identify and analyze them.
+            result.add(card != null ? card : WordCard.builder().surface(surface).build());
         }
         return result;
     }

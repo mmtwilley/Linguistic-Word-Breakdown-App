@@ -68,7 +68,24 @@ curl -s -X POST http://localhost:8080/api/analyze \
   -d '{"text":"오늘 날씨가 정말 좋네요"}' | jq
 ```
 
-## 5. Run tests
+## 5. Production profile (HTTPS)
+
+HTTPS is mandatory outside local development (constitution Principle II).
+Production deployments MUST set:
+
+```bash
+export SPRING_PROFILES_ACTIVE=prod
+export SSL_KEY_STORE=/path/to/keystore.p12
+export SSL_KEY_STORE_PASSWORD=...
+export SSL_KEY_STORE_TYPE=PKCS12   # optional, defaults to PKCS12
+```
+
+With the `prod` profile active, Tomcat serves TLS directly (plain-HTTP requests
+to the TLS port are rejected with 400), and Spring Security additionally
+redirects any insecure request to HTTPS — covering deployments where TLS
+terminates at a reverse proxy (`X-Forwarded-Proto` is honoured).
+
+## 6. Run tests
 
 ```bash
 # Unit + controller tests (no Docker needed)

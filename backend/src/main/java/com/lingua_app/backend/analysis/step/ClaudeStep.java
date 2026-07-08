@@ -31,16 +31,17 @@ public class ClaudeStep implements AnalysisStep {
 
     private final AppProperties appProperties;
     private final ObjectMapper objectMapper;
-    private final ClaudeStep self; // Final field for explicit constructor injection
+    // Resolved lazily at call time — resolving in the constructor would create a
+    // circular dependency, since the bean is still being constructed at that point.
+    private final ObjectProvider<ClaudeStep> selfProvider;
 
     // Spring implicitly auto-wires single constructors
-    public ClaudeStep(AppProperties appProperties, 
-                      ObjectMapper objectMapper, 
+    public ClaudeStep(AppProperties appProperties,
+                      ObjectMapper objectMapper,
                       ObjectProvider<ClaudeStep> selfProvider) {
         this.appProperties = appProperties;
         this.objectMapper = objectMapper;
-        // Lazily retrieves the AOP proxy to avoid unresolvable circular dependency cycles
-        this.self = selfProvider.getObject();
+        this.selfProvider = selfProvider;
     }
 
 
@@ -56,7 +57,8 @@ public class ClaudeStep implements AnalysisStep {
 
         if (unresolvedSurfaces.isEmpty()) return;
 
-        self.callClaude(ctx, unresolvedSurfaces, knownWords);
+        // Go through the AOP proxy so @Retry/@CircuitBreaker apply (self-invocation bypasses them)
+        selfProvider.getObject().callClaude(ctx, unresolvedSurfaces, knownWords);
     }
 
     @Retry(name = "claude")

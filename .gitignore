@@ -29,3 +29,9 @@ Thumbs.db
 
 # Generated files
 out/
+
+# Node
+node_modules/
+
+# Spec Kit extension cache
+.specify/extensions/.cache/

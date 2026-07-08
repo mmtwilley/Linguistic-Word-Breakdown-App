@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -w '\\\\nHTTP_STATUS:%{http_code}' -X POST http://localhost:8080/api/analyze -H 'Content-Type: application/json' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjMTdkMzdlNy0xYzBlLTRiMGEtODYwNS0wZDYxZGNkMzNkZWQiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE3ODMyNzY4MTYsImV4cCI6MTc4MzI3NzcxNn0.YEkbCwEz3DBixYy8NBts5nYjtxF0sD1TFR3ZML6O0zA' -d '{\"text\":\"오늘 날씨가 정말 좋네요\"}' --max-time 120)",
+      "Bash(printf '{\"text\":\"\\\\xec\\\\x98\\\\xa4\\\\xeb\\\\x8a\\\\x98 \\\\xeb\\\\x82\\\\xa0\\\\xec\\\\x94\\\\xa8\\\\xea\\\\xb0\\\\x80 \\\\xec\\\\xa0\\\\x95\\\\xeb\\\\xa7\\\\x90 \\\\xec\\\\xa2\\\\x8b\\\\xeb\\\\x84\\\\xa4\\\\xec\\\\x9a\\\\x94\"}')",
+      "Read(//tmp/**)",
+      "Bash(curl -s -w '\\\\nHTTP_STATUS:%{http_code}' -X POST http://localhost:8080/api/analyze -H 'Content-Type: application/json; charset=utf-8' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjMTdkMzdlNy0xYzBlLTRiMGEtODYwNS0wZDYxZGNkMzNkZWQiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE3ODMyNzY4MTYsImV4cCI6MTc4MzI3NzcxNn0.YEkbCwEz3DBixYy8NBts5nYjtxF0sD1TFR3ZML6O0zA' --data-binary @/tmp/analyze_body.json --max-time 120)",
+      "Bash(curl -s --http2 -o /dev/null -w \"%{http_code} %{http_version}\\\\n\" -A \"Mozilla/5.0 \\(compatible; LinguaApp/0.1\\)\" \"https://krdict.korean.go.kr/api/search?key=dummy&q=%EC%98%A4%EB%8A%98\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" -A \"Mozilla/5.0 \\(compatible; LinguaApp/0.1\\)\" -H \"Accept: text/plain, */*\" \"https://krdict.korean.go.kr/api/search?key=dummy&q=%EC%98%A4%EB%8A%98\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" -A \"Java-http-client/25.0.1\" \"https://krdict.korean.go.kr/api/search?key=dummy&q=%EC%98%A4%EB%8A%98\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" -A \"Java/25.0.1\" \"https://krdict.korean.go.kr/api/search?key=dummy&q=%EC%98%A4%EB%8A%98\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"https://krdict.korean.go.kr/api/search?key=dummy%22&q=%EC%98%A4%EB%8A%98\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"https://krdict.korean.go.kr/api/search?key=dummy%20x&q=%EC%98%A4%EB%8A%98\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"https://krdict.korean.go.kr/api/search?key=dummy&q=%EC%98%A4%EB%8A%98\")",
+      "Bash(curl -s -o /dev/null -w '%{http_code}\\\\n' -A 'Mozilla/5.0 \\(compatible; LinguaApp/0.1\\)' 'https://krdict.korean.go.kr/api/search?key=dummy&q=%EC%98%A4%EB%8A%98')",
+      "Bash(curl -s -o /dev/null -w '%{http_code}\\\\n' -A 'Mozilla/5.0 \\(compatible; LinguaApp/0.1\\)' 'https://krdict.korean.go.kr/api/search?key=dummy%22&q=%EC%98%A4%EB%8A%98')",
+      "Bash(curl -s -o /dev/null -w '%{http_code}\\\\n' -A 'Mozilla/5.0 \\(compatible; LinguaApp/0.1\\)' 'https://krdict.korean.go.kr/api/search?key=dummy%20x&q=%EC%98%A4%EB%8A%98')"
+    ]
+  }
+}
