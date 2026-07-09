@@ -144,6 +144,40 @@ class AnalysisControllerTest {
     }
 
     @Test
+    void analyze_perCardIssue_serializesFullIssueShape_andCanonicalPos() throws Exception {
+        authenticateAs("testUser");
+        AnalysisResponse mockResponse = new AnalysisResponse(
+                "kor",
+                "Today the weather is really nice.",
+                List.of(
+                        new WordCardDto("오늘", "오늘", "noun", "today", "oneul", null),
+                        new WordCardDto("날씨가", "날씨", "noun", null, "nalssiga", null)
+                ),
+                Confidence.MEDIUM,
+                List.of(new ValidationIssueDto(
+                        IssueCode.MISSING_FIELD,
+                        ValidationIssueDto.Severity.WARNING,
+                        "날씨가",
+                        "This word card is missing its base form or meaning."))
+        );
+        when(analysisService.analyze(any(), any())).thenReturn(mockResponse);
+
+        mockMvc.perform(post("/api/analyze")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(
+                                new AnalysisRequest("오늘 날씨가 정말 좋네요", null))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.confidence").value("medium"))
+                .andExpect(jsonPath("$.issues.length()").value(1))
+                .andExpect(jsonPath("$.issues[0].code").value("MISSING_FIELD"))
+                .andExpect(jsonPath("$.issues[0].severity").value("warning"))
+                .andExpect(jsonPath("$.issues[0].surface").value("날씨가"))
+                .andExpect(jsonPath("$.issues[0].detail").isNotEmpty())
+                .andExpect(jsonPath("$.words[0].pos").value("noun"))
+                .andExpect(jsonPath("$.words[1].pos").value("noun"));
+    }
+
+    @Test
     void analyze_degradedResult_serializesConfidenceAndIssueShape() throws Exception {
         authenticateAs("testUser");
         AnalysisResponse mockResponse = new AnalysisResponse(

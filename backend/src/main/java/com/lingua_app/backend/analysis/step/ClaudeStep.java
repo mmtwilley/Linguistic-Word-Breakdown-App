@@ -14,6 +14,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lingua_app.backend.AppProperties;
 import com.lingua_app.backend.analysis.pipeline.AnalysisContext;
+import com.lingua_app.backend.analysis.pipeline.IssueCode;
+import com.lingua_app.backend.analysis.pipeline.ValidationIssue;
 import com.lingua_app.backend.analysis.pipeline.WordCard;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -85,8 +87,12 @@ public class ClaudeStep implements AnalysisStep {
                         .build()
         );
 
-        List<WordCard> claudeWords = parseToolResponse(message);
+        List<WordCard> claudeWords = parseToolResponse(message, ctx);
+        mergeWords(ctx, claudeWords);
+    }
 
+    // Package-private for tests. Replaces the unresolved cards with Claude's versions.
+    void mergeWords(AnalysisContext ctx, List<WordCard> claudeWords) {
         // Preserve katakana readings placed by DictionaryStep (Japanese Kuromoji output)
         // so RomanizationStep can still convert them after we replace the entry.
         Map<String, String> savedReadings = ctx.getWords().stream()
@@ -215,18 +221,21 @@ public class ClaudeStep implements AnalysisStep {
     // Response parsing
     // -------------------------------------------------------------------------
 
-    private List<WordCard> parseToolResponse(Message message) {
+    private List<WordCard> parseToolResponse(Message message, AnalysisContext ctx) {
         return message.content().stream()
                 .filter(b -> b.isToolUse())
                 .map(b -> b.asToolUse())
                 .filter(tu -> "analyze_words".equals(tu.name()))
                 .findFirst()
-                .map(this::extractWordCards)
+                .map(tu -> extractWordCards(tu, ctx))
                 .orElse(List.of());
     }
 
+    // Package-private for tests. FR-009 (research Decision 6): shape-validate each
+    // entry at parse time so invalid ones never displace DictionaryStep's
+    // surface-only cards — the honest gap stays visible to downstream checks.
     @SuppressWarnings("unchecked")
-    private List<WordCard> extractWordCards(ToolUseBlock tu) {
+    List<WordCard> extractWordCards(ToolUseBlock tu, AnalysisContext ctx) {
         String json;
         try {
             json = objectMapper.writeValueAsString(tu._input());
@@ -242,11 +251,36 @@ public class ClaudeStep implements AnalysisStep {
         }
 
         List<Map<String, Object>> wordMaps = (List<Map<String, Object>>) root.get("words");
-        if (wordMaps == null) return List.of();
+        if (wordMaps == null) {
+            ctx.getPartialErrors().put("claude", "CLAUDE_MALFORMED_RESPONSE");
+            return List.of();
+        }
 
         return wordMaps.stream()
+                .filter(m -> isValidEntry(m, ctx))
                 .map(this::mapToWordCard)
                 .toList();
+    }
+
+    private boolean isValidEntry(Map<String, Object> m, AnalysisContext ctx) {
+        String surface = stringField(m, "surface");
+        boolean fieldsPresent = surface != null
+                && stringField(m, "lemma") != null
+                && stringField(m, "pos") != null
+                && stringField(m, "gloss") != null;
+        boolean surfaceInText = surface != null
+                && ctx.getText() != null && ctx.getText().contains(surface);
+        if (fieldsPresent && surfaceInText) return true;
+
+        ctx.getValidationIssues().add(ValidationIssue.warn(
+                IssueCode.AI_ENTRY_REJECTED, surface,
+                "An AI-generated entry was dropped because it was incomplete "
+                        + "or did not match the input."));
+        return false;
+    }
+
+    private static String stringField(Map<String, Object> m, String key) {
+        return m.get(key) instanceof String s && !s.isBlank() ? s : null;
     }
 
     private WordCard mapToWordCard(Map<String, Object> m) {
