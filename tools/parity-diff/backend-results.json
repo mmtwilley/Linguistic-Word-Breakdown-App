@@ -4,7 +4,7 @@
     "lang": "kor",
     "text": "오늘 날씨가 정말 좋네요",
     "ok": true,
-    "ms": 7459,
+    "ms": 7754,
     "response": {
       "language": "kor",
       "translation": "The weather is really nice today.",
@@ -12,7 +12,7 @@
         {
           "surface": "오늘",
           "lemma": "오늘",
-          "pos": "명사",
+          "pos": "noun",
           "gloss": "today",
           "romanization": "oneul",
           "ipa": null
@@ -20,7 +20,7 @@
         {
           "surface": "정말",
           "lemma": "정말",
-          "pos": "명사",
+          "pos": "noun",
           "gloss": "fact",
           "romanization": "jeongmal",
           "ipa": null
@@ -58,7 +58,7 @@
     "lang": "kor",
     "text": "저는 어제 친구와 같이 영화를 봤어요",
     "ok": true,
-    "ms": 6855,
+    "ms": 6607,
     "response": {
       "language": "kor",
       "translation": "I went to see a movie with a friend yesterday.",
@@ -66,7 +66,7 @@
         {
           "surface": "어제",
           "lemma": "어제",
-          "pos": "명사",
+          "pos": "noun",
           "gloss": "yesterday",
           "romanization": "eoje",
           "ipa": null
@@ -74,7 +74,7 @@
         {
           "surface": "같이",
           "lemma": "같이",
-          "pos": "부사",
+          "pos": "adv",
           "gloss": "together",
           "romanization": "gat-i",
           "ipa": null
@@ -83,7 +83,7 @@
           "surface": "저는",
           "lemma": "저",
           "pos": "noun",
-          "gloss": "I (humble/polite first-person pronoun)",
+          "gloss": "I (humble first-person pronoun)",
           "romanization": "jeoneun",
           "ipa": null
         },
@@ -128,7 +128,7 @@
     "lang": "kor",
     "text": "한국어를 배우는 것은 어렵지만 재미있어요",
     "ok": true,
-    "ms": 6128,
+    "ms": 6870,
     "response": {
       "language": "kor",
       "translation": "Learning Korean is difficult but fun.",
@@ -136,7 +136,7 @@
         {
           "surface": "배우는",
           "lemma": "배우다",
-          "pos": "동사",
+          "pos": "verb",
           "gloss": "learn",
           "romanization": "baeuneun",
           "ipa": null
@@ -160,7 +160,7 @@
         {
           "surface": "어렵지만",
           "lemma": "어렵다",
-          "pos": "adjective",
+          "pos": "adj",
           "gloss": "difficult",
           "romanization": "eolyeobjiman",
           "ipa": null
@@ -168,7 +168,7 @@
         {
           "surface": "재미있어요",
           "lemma": "재미있다",
-          "pos": "adjective",
+          "pos": "adj",
           "gloss": "fun; interesting",
           "romanization": "jaemiiss-eoyo",
           "ipa": null
@@ -190,7 +190,7 @@
     "lang": "jpn",
     "text": "私は毎朝コーヒーを飲みます",
     "ok": true,
-    "ms": 5994,
+    "ms": 5641,
     "response": {
       "language": "jpn",
       "translation": "I drink coffee every morning.",
@@ -231,7 +231,7 @@
           "surface": "を",
           "lemma": "を",
           "pos": "particle",
-          "gloss": "direct object marker particle",
+          "gloss": "object marker particle",
           "romanization": "wo",
           "ipa": null
         },
@@ -247,7 +247,7 @@
           "surface": "ます",
           "lemma": "ます",
           "pos": "particle",
-          "gloss": "polite verb ending (non-past)",
+          "gloss": "polite non-past auxiliary verb",
           "romanization": "masu",
           "ipa": null
         }
@@ -261,7 +261,7 @@
     "lang": "jpn",
     "text": "昨日友達と映画を見に行きました",
     "ok": true,
-    "ms": 8311,
+    "ms": 9196,
     "response": {
       "language": "jpn",
       "translation": "I went to see a movie with a friend yesterday.",
@@ -318,7 +318,7 @@
           "surface": "に",
           "lemma": "に",
           "pos": "particle",
-          "gloss": "purpose marker (going to do something)",
+          "gloss": "purpose marker (indicating goal of movement: 'in order to')",
           "romanization": "ni",
           "ipa": null
         },
@@ -334,7 +334,7 @@
           "surface": "まし",
           "lemma": "ます",
           "pos": "verb",
-          "gloss": "polite auxiliary verb (masu-stem)",
+          "gloss": "polite auxiliary verb (masu-form stem)",
           "romanization": "mashi",
           "ipa": null
         },
@@ -356,7 +356,7 @@
     "lang": "jpn",
     "text": "日本語の勉強は難しいですが、楽しいです",
     "ok": true,
-    "ms": 7159,
+    "ms": 6963,
     "response": {
       "language": "jpn",
       "translation": "Studying Japanese is difficult, but it's fun.",
@@ -396,7 +396,7 @@
         {
           "surface": "難しい",
           "lemma": "難しい",
-          "pos": "adjective",
+          "pos": "adj",
           "gloss": "difficult, hard",
           "romanization": "muzukashii",
           "ipa": null
@@ -413,14 +413,14 @@
           "surface": "が",
           "lemma": "が",
           "pos": "particle",
-          "gloss": "conjunction/contrast particle (but)",
+          "gloss": "conjunction/contrast marker (but)",
           "romanization": "ga",
           "ipa": null
         },
         {
           "surface": "楽しい",
           "lemma": "楽しい",
-          "pos": "adjective",
+          "pos": "adj",
           "gloss": "fun, enjoyable",
           "romanization": "tanoshii",
           "ipa": null
@@ -443,7 +443,7 @@
     "lang": "cmn",
     "text": "我昨天和朋友一起看了电影",
     "ok": true,
-    "ms": 579,
+    "ms": 989,
     "response": {
       "language": "cmn",
       "translation": "I went to see a movie with a friend yesterday.",
@@ -464,7 +464,7 @@
     "lang": "cmn",
     "text": "学习中文很有意思",
     "ok": true,
-    "ms": 273,
+    "ms": 274,
     "response": {
       "language": "cmn",
       "translation": "Learning Chinese is really interesting.",
@@ -485,7 +485,7 @@
     "lang": "eng",
     "text": "The quick brown fox jumps over the lazy dog",
     "ok": true,
-    "ms": 900,
+    "ms": 564,
     "response": {
       "language": "lat",
       "translation": "The quick brown fox jumps over the lazy dog",
@@ -493,7 +493,7 @@
         {
           "surface": "The",
           "lemma": "the",
-          "pos": "adverb",
+          "pos": "adv",
           "gloss": "With a comparative or with more and a verb phrase, establishes a correlation with one or more other such comparatives.",
           "romanization": null,
           "ipa": null
@@ -541,7 +541,7 @@
         {
           "surface": "the",
           "lemma": "the",
-          "pos": "adverb",
+          "pos": "adv",
           "gloss": "With a comparative or with more and a verb phrase, establishes a correlation with one or more other such comparatives.",
           "romanization": null,
           "ipa": null
@@ -572,7 +572,7 @@
     "lang": "eng",
     "text": "She couldn't have finished the report yesterday",
     "ok": true,
-    "ms": 682,
+    "ms": 298,
     "response": {
       "language": "lat",
       "translation": "She couldn't have finished the report yesterday",
@@ -604,7 +604,7 @@
         {
           "surface": "the",
           "lemma": "the",
-          "pos": "adverb",
+          "pos": "adv",
           "gloss": "With a comparative or with more and a verb phrase, establishes a correlation with one or more other such comparatives.",
           "romanization": null,
           "ipa": null

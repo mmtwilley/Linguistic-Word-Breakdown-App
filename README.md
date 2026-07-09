@@ -51,6 +51,60 @@ Analyzes a passage in Korean, Japanese, Chinese, or English and returns per-toke
 
 **Rate limiting**: 20 requests/min per user (configurable).
 
+### Analysis Validation (Phase 2)
+
+Every `/analyze` response carries two always-present fields that report how trustworthy
+the analysis is:
+
+```json
+{
+  "language": "kor",
+  "translation": "The weather is really nice today.",
+  "words": [ ... ],
+  "confidence": "medium",
+  "issues": [
+    {
+      "code": "CARDS_OUT_OF_ORDER",
+      "severity": "warning",
+      "surface": "날씨가",
+      "detail": "1 word card(s) appear out of sentence order."
+    }
+  ]
+}
+```
+
+- `confidence` — `"high"`, `"medium"`, or `"low"`. Clean analyses are `high`; any warning
+  drops to `medium`; any error-severity issue, a failed core pipeline stage, or warnings
+  on more than half the cards drop to `low`.
+- `issues` — empty array when the analysis is clean.
+- `issues[].code` — **stable**: clients may switch on it. New codes may be added, but
+  existing codes are never renamed or repurposed.
+- `issues[].surface` — the affected word as it appears in a card/input; `null` for
+  response-level issues.
+- `issues[].detail` — display-safe, human-readable, **not stable** — show it, don't parse it.
+
+**Issue codes**
+
+| Code | Severity | Meaning |
+|---|---|---|
+| `EMPTY_ANALYSIS` | error | Non-empty input produced zero word cards |
+| `INPUT_NOT_COVERED` | error | Part of the input appears in no card; `detail` names the missing fragment(s) |
+| `CARDS_OUT_OF_ORDER` | warning | Card order doesn't follow input position |
+| `MISSING_FIELD` | warning | A card's `lemma` or `gloss` is missing/blank (one issue per card) |
+| `ROMANIZATION_PASSTHROUGH` | warning | `romanization` identical to `surface` (Korean/Japanese/Chinese) |
+| `UNKNOWN_POS` | warning | POS label couldn't be normalized to the canonical set; original label passed through |
+| `AI_ENTRY_REJECTED` | warning | An AI-generated entry was dropped (missing field, or surface not in the input) |
+| `STAGE_FAILED` | error or warning | A pipeline stage failed; `detail` names the stage. Error for dictionary/claude/detection, warning for translation/romanization |
+
+`words[].pos` is normalized to a canonical vocabulary
+(`noun, verb, adj, adv, pron, prep, conj, det, num, particle, punct, other`); any
+unmapped label is passed through unchanged and flagged with `UNKNOWN_POS`.
+
+Responses containing `STAGE_FAILED` are transient (retrying may succeed); all other
+codes are deterministic for the same input. The full contract, including the normative
+confidence derivation and cache-eligibility rules, is in
+[specs/002-analysis-validation/contracts/validation-api.md](specs/002-analysis-validation/contracts/validation-api.md).
+
 ## Getting Started
 
 ### Prerequisites
