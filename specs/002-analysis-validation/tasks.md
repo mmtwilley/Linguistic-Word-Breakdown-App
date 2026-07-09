@@ -82,14 +82,14 @@ fixture table, kor rows).
 
 ### Tests for User Story 2
 
-- [ ] T015 [P] [US2] Write failing unit tests for the mapping table (Krdict Korean labels, spelled-out English, Kuromoji-prefix Japanese, compound "noun (pronoun)", unmappable → empty) in backend/src/test/java/com/lingua_app/backend/analysis/step/PosNormalizerTest.java
-- [ ] T016 [P] [US2] Extend ValidationStepTest with `MISSING_FIELD`, `ROMANIZATION_PASSTHROUGH` (kor/jpn/cmn only), `UNKNOWN_POS`, and pos-rewrite assertions in backend/src/test/java/com/lingua_app/backend/analysis/step/ValidationStepTest.java
+- [x] T015 [P] [US2] Write failing unit tests for the mapping table (Krdict Korean labels, spelled-out English, Kuromoji-prefix Japanese, compound "noun (pronoun)", unmappable → empty) in backend/src/test/java/com/lingua_app/backend/analysis/step/PosNormalizerTest.java
+- [x] T016 [P] [US2] Extend ValidationStepTest with `MISSING_FIELD`, `ROMANIZATION_PASSTHROUGH` (kor/jpn/cmn only), `UNKNOWN_POS`, and pos-rewrite assertions in backend/src/test/java/com/lingua_app/backend/analysis/step/ValidationStepTest.java
 
 ### Implementation for User Story 2
 
-- [ ] T017 [US2] Create `PosNormalizer` utility with canonical vocabulary (noun, verb, adj, adv, pron, prep, conj, det, num, particle, punct, other) and full mapping table (FR-008, research Decision 5) in backend/src/main/java/com/lingua_app/backend/analysis/step/PosNormalizer.java
-- [ ] T018 [US2] Implement per-card checks in ValidationStep: `MISSING_FIELD` (FR-006), `ROMANIZATION_PASSTHROUGH` (FR-007), and POS normalize-then-flag rewriting `WordCard.pos` when mappable, `UNKNOWN_POS` otherwise (FR-008) in backend/src/main/java/com/lingua_app/backend/analysis/step/ValidationStep.java
-- [ ] T019 [US2] Add controller test asserting full issue JSON shape (`$.issues[0].code/severity/surface/detail`) and canonical pos values in `$.words[*].pos` in backend/src/test/java/com/lingua_app/backend/controller/AnalysisControllerTest.java
+- [x] T017 [US2] Create `PosNormalizer` utility with canonical vocabulary (noun, verb, adj, adv, pron, prep, conj, det, num, particle, punct, other) and full mapping table (FR-008, research Decision 5) in backend/src/main/java/com/lingua_app/backend/analysis/step/PosNormalizer.java
+- [x] T018 [US2] Implement per-card checks in ValidationStep: `MISSING_FIELD` (FR-006), `ROMANIZATION_PASSTHROUGH` (FR-007), and POS normalize-then-flag rewriting `WordCard.pos` when mappable, `UNKNOWN_POS` otherwise (FR-008) in backend/src/main/java/com/lingua_app/backend/analysis/step/ValidationStep.java
+- [x] T019 [US2] Add controller test asserting full issue JSON shape (`$.issues[0].code/severity/surface/detail`) and canonical pos values in `$.words[*].pos` in backend/src/test/java/com/lingua_app/backend/controller/AnalysisControllerTest.java
 
 **Checkpoint**: US2 acceptance scenarios pass; contract kor rows hold (labels normalized,
 no `UNKNOWN_POS` for known Krdict labels).
@@ -107,11 +107,11 @@ array records a claude partial error instead of silently returning empty.
 
 ### Tests for User Story 3
 
-- [ ] T020 [P] [US3] Write failing unit tests for entry rejection (blank field, missing field, surface not in input, missing `words` array → partial error; valid entries preserved with katakana reading restore) in backend/src/test/java/com/lingua_app/backend/analysis/step/ClaudeStepTest.java
+- [x] T020 [P] [US3] Write failing unit tests for entry rejection (blank field, missing field, surface not in input, missing `words` array → partial error; valid entries preserved with katakana reading restore) in backend/src/test/java/com/lingua_app/backend/analysis/step/ClaudeStepTest.java
 
 ### Implementation for User Story 3
 
-- [ ] T021 [US3] Implement FR-009 in `ClaudeStep`: filter invalid entries in `extractWordCards`/`callClaude` (required fields non-blank, surface occurs in `ctx.getText()`), append `AI_ENTRY_REJECTED` issues to context, record claude partial error when `words` is absent (research Decision 6) in backend/src/main/java/com/lingua_app/backend/analysis/step/ClaudeStep.java
+- [x] T021 [US3] Implement FR-009 in `ClaudeStep`: filter invalid entries in `extractWordCards`/`callClaude` (required fields non-blank, surface occurs in `ctx.getText()`), append `AI_ENTRY_REJECTED` issues to context, record claude partial error when `words` is absent (research Decision 6) in backend/src/main/java/com/lingua_app/backend/analysis/step/ClaudeStep.java
 
 **Checkpoint**: SC-005 holds — no structurally invalid AI entry can appear as a card;
 coverage/`MISSING_FIELD` checks downstream report the honest gap.

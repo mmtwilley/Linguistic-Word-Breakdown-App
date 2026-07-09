@@ -16,9 +16,10 @@ import java.util.Set;
 
 /**
  * Rule-based sanity checks over the finished analysis (feature 002). Runs last in the
- * pipeline so it sees the final card list. Read-only over words/translation; its only
- * writes are the issue list and the confidence level. All checks are local string
- * scans — no external calls (FR-011).
+ * pipeline so it sees the final card list. Read-only over words/translation except for
+ * one deliberate write: mappable POS labels are rewritten to the canonical vocabulary
+ * (FR-008, clarification Q2). Other writes are the issue list and the confidence level.
+ * All checks are local string scans — no external calls (FR-011).
  */
 @Component
 public class ValidationStep implements AnalysisStep {
@@ -29,6 +30,10 @@ public class ValidationStep implements AnalysisStep {
     // anything else (translation, romanization) degrades the response, not the cards.
     private static final Set<String> WORD_AFFECTING_STAGES =
             Set.of("dictionary", "claude", "detection");
+
+    // Languages whose romanization must differ from the surface script (FR-007);
+    // for Latin-script languages an identical "romanization" is simply correct.
+    private static final Set<String> TRANSLITERATED_LANGS = Set.of("kor", "jpn", "cmn");
 
     public void run(AnalysisContext ctx) {
         String text = ctx.getText();
@@ -55,6 +60,7 @@ public class ValidationStep implements AnalysisStep {
             checkOrder(text, words, issues, warnedCards);
         }
 
+        checkCards(lang, words, issues, warnedCards);
         checkStageFailures(ctx, issues);
 
         ctx.getValidationIssues().addAll(issues);
@@ -138,6 +144,43 @@ public class ValidationStep implements AnalysisStep {
             issues.add(ValidationIssue.warn(IssueCode.CARDS_OUT_OF_ORDER, firstOffender,
                     violations + " word card(s) appear out of sentence order."));
         }
+    }
+
+    // --- FR-006/007/008: per-card checks --------------------------------------------
+
+    private void checkCards(String lang, List<WordCard> words,
+                            List<ValidationIssue> issues, Set<WordCard> warnedCards) {
+        for (WordCard card : words) {
+            String surface = card.getSurface();
+
+            if (isBlank(card.getLemma()) || isBlank(card.getGloss())) {
+                issues.add(ValidationIssue.warn(IssueCode.MISSING_FIELD, surface,
+                        "This word card is missing its base form or meaning."));
+                warnedCards.add(card);
+            }
+
+            if (TRANSLITERATED_LANGS.contains(lang) && surface != null
+                    && surface.equals(card.getRomanization())) {
+                issues.add(ValidationIssue.warn(IssueCode.ROMANIZATION_PASSTHROUGH, surface,
+                        "Pronunciation guidance repeats the original script."));
+                warnedCards.add(card);
+            }
+
+            // FR-008 normalize-then-flag: rewrite when mappable, warn and leave
+            // unchanged otherwise. Absent labels are FR-006's concern, not FR-008's.
+            String pos = card.getPos();
+            if (!isBlank(pos)) {
+                PosNormalizer.normalize(pos).ifPresentOrElse(card::setPos, () -> {
+                    issues.add(ValidationIssue.warn(IssueCode.UNKNOWN_POS, surface,
+                            "Word-class label is outside the documented vocabulary."));
+                    warnedCards.add(card);
+                });
+            }
+        }
+    }
+
+    private static boolean isBlank(String value) {
+        return value == null || value.isBlank();
     }
 
     // --- STAGE_FAILED from partialErrors (clarification Q1) ------------------------

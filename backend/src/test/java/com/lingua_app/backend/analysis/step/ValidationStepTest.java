@@ -163,6 +163,95 @@ class ValidationStepTest {
         assertThat(c.getConfidence()).isEqualTo(Confidence.LOW);
     }
 
+    // --- FR-006 missing fields ----------------------------------------------
+
+    @Test
+    void blankLemma_flagsMissingField_warn_identifyingCard_andMedium() {
+        WordCard broken = WordCard.builder().surface("날씨가").lemma("  ").gloss("weather").build();
+        AnalysisContext c = ctx("오늘 날씨가 정말 좋네요", "kor",
+                card("오늘"), broken, card("정말"), card("좋네요"));
+        step.run(c);
+        ValidationIssue issue = c.getValidationIssues().stream()
+                .filter(i -> i.code() == IssueCode.MISSING_FIELD).findFirst().orElseThrow();
+        assertThat(issue.severity()).isEqualTo(ValidationIssue.Severity.WARN);
+        assertThat(issue.surface()).isEqualTo("날씨가");
+        assertThat(c.getConfidence()).isEqualTo(Confidence.MEDIUM);
+    }
+
+    @Test
+    void missingGloss_flagsMissingField() {
+        WordCard broken = WordCard.builder().surface("오늘").lemma("오늘").build(); // null gloss
+        AnalysisContext c = ctx("오늘 날씨", "kor", broken, card("날씨"));
+        step.run(c);
+        assertThat(codes(c)).contains(IssueCode.MISSING_FIELD);
+    }
+
+    // --- FR-007 romanization passthrough --------------------------------------
+
+    @Test
+    void romanizationEqualToSurface_flagsPassthrough_forKorean() {
+        WordCard echoed = WordCard.builder()
+                .surface("오늘").lemma("오늘").gloss("today").romanization("오늘").build();
+        AnalysisContext c = ctx("오늘 날씨", "kor", echoed, card("날씨"));
+        step.run(c);
+        ValidationIssue issue = c.getValidationIssues().stream()
+                .filter(i -> i.code() == IssueCode.ROMANIZATION_PASSTHROUGH).findFirst().orElseThrow();
+        assertThat(issue.severity()).isEqualTo(ValidationIssue.Severity.WARN);
+        assertThat(issue.surface()).isEqualTo("오늘");
+    }
+
+    @Test
+    void properRomanization_isNotFlagged() {
+        WordCard fine = WordCard.builder()
+                .surface("오늘").lemma("오늘").gloss("today").romanization("oneul").build();
+        AnalysisContext c = ctx("오늘 날씨", "kor", fine, card("날씨"));
+        step.run(c);
+        assertThat(codes(c)).doesNotContain(IssueCode.ROMANIZATION_PASSTHROUGH);
+    }
+
+    @Test
+    void identicalRomanization_isFineForLatinScriptLanguages() {
+        WordCard latin = WordCard.builder()
+                .surface("cat").lemma("cat").gloss("cat").romanization("cat").build();
+        AnalysisContext c = ctx("the cat", "lat", card("the"), latin);
+        step.run(c);
+        assertThat(codes(c)).doesNotContain(IssueCode.ROMANIZATION_PASSTHROUGH);
+    }
+
+    // --- FR-008 POS normalize-then-flag ----------------------------------------
+
+    @Test
+    void mappablePos_isRewrittenToCanonical_withNoIssue() {
+        WordCard korean = WordCard.builder()
+                .surface("오늘").lemma("오늘").gloss("today").pos("명사").build();
+        AnalysisContext c = ctx("오늘 날씨", "kor", korean, card("날씨"));
+        step.run(c);
+        assertThat(korean.getPos()).isEqualTo("noun");
+        assertThat(codes(c)).doesNotContain(IssueCode.UNKNOWN_POS);
+    }
+
+    @Test
+    void unmappablePos_flagsUnknownPos_warn_andLeavesLabelUnchanged() {
+        WordCard odd = WordCard.builder()
+                .surface("오늘").lemma("오늘").gloss("today").pos("품사불명").build();
+        AnalysisContext c = ctx("오늘 날씨", "kor", odd, card("날씨"));
+        step.run(c);
+        ValidationIssue issue = c.getValidationIssues().stream()
+                .filter(i -> i.code() == IssueCode.UNKNOWN_POS).findFirst().orElseThrow();
+        assertThat(issue.severity()).isEqualTo(ValidationIssue.Severity.WARN);
+        assertThat(issue.surface()).isEqualTo("오늘");
+        assertThat(odd.getPos()).isEqualTo("품사불명");
+        assertThat(c.getConfidence()).isEqualTo(Confidence.MEDIUM);
+    }
+
+    @Test
+    void nullPos_isNotFlaggedAsUnknown() {
+        // card() builds with null pos; the clean-path test relies on this staying quiet.
+        AnalysisContext c = ctx("오늘 날씨", "kor", card("오늘"), card("날씨"));
+        step.run(c);
+        assertThat(codes(c)).doesNotContain(IssueCode.UNKNOWN_POS);
+    }
+
     // --- FR-012 robustness --------------------------------------------------
 
     @Test
