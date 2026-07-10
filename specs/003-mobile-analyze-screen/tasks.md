@@ -33,7 +33,7 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T005 [P] Create canonical wire types in mobile/src/api/types.ts exactly as specified in specs/003-mobile-analyze-screen/contracts/backend-api.md §5 (Confidence, IssueCode with forward-compat union, ValidationIssue, WordCard, AnalysisResult, LanguageHint, AnalysisRequest, AuthResponse, ErrorEnvelope)
+- [x] T005 [P] Create canonical wire types in mobile/src/api/types.ts exactly as specified in specs/003-mobile-analyze-screen/contracts/backend-api.md §5 (Confidence, IssueCode with forward-compat union, ValidationIssue, WordCard, AnalysisResult, LanguageHint, AnalysisRequest, AuthResponse, ErrorEnvelope) ✅ 2026-07-10 (also RegisterRequest/LoginRequest/RefreshRequest; typecheck + lint clean)
 - [ ] T006 [P] Create plain-language message maps in mobile/src/i18n/messages.ts: all 8 issue codes + generic unknown-code fallback (contract §3) and all 10 error codes with per-code behavior notes (contract §4); no raw code is ever a display string
 - [ ] T007 Create the typed fetch client in mobile/src/api/client.ts: reads EXPO_PUBLIC_API_URL (startup check: non-local URL must be https, research.md Decision 8), JSON headers, parses 2xx to typed results and non-2xx bodies to ErrorEnvelope, synthesizes `NETWORK_ERROR` (retryable) for fetch failure/timeout via AbortController (depends on T005)
 - [ ] T008 [P] Create token storage in mobile/src/auth/tokenStorage.ts wrapping expo-secure-store: read/write/clear the accessToken+refreshToken pair as a unit (data-model.md Session invariants)
