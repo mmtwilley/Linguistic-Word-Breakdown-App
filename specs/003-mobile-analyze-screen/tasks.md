@@ -19,7 +19,7 @@
 **Purpose**: A booting Expo TypeScript project with test tooling and environment config.
 
 - [x] T001 Create the Expo project: `npx create-expo-app@latest mobile --template blank-typescript` at repo root; verify it boots on the Android emulator per specs/003-mobile-analyze-screen/quickstart.md ✅ 2026-07-10 (Expo SDK 57, RN 0.86, TS 6; verified via emulator screenshot)
-- [ ] T002 Install runtime dependencies in mobile/: `npx expo install @react-navigation/native @react-navigation/bottom-tabs @react-navigation/native-stack react-native-screens react-native-safe-area-context expo-secure-store`
+- [x] T002 Install runtime dependencies in mobile/: `npx expo install @react-navigation/native @react-navigation/bottom-tabs @react-navigation/native-stack react-native-screens react-native-safe-area-context expo-secure-store` ✅ 2026-07-10 (React Navigation v7, secure-store plugin auto-added to app.json, tsc clean)
 - [ ] T003 [P] Configure testing and linting in mobile/package.json: jest-expo preset + `test` script (dev deps jest, jest-expo, @testing-library/react-native, @types/jest); ESLint via eslint-config-expo + Prettier with `lint` script; `typecheck` script running `tsc --noEmit` (constitution: linting enforced on commit — no exceptions); add a passing smoke test in mobile/__tests__/smoke.test.tsx
 - [ ] T004 [P] Create mobile/.env.example documenting EXPO_PUBLIC_API_URL (emulator value `http://10.0.2.2:8080`); add `.env` to mobile/.gitignore
 
