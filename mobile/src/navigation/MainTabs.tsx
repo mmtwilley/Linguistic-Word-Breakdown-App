@@ -6,6 +6,7 @@
  */
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
+import HomeScreen from "../screens/HomeScreen";
 import PlaceholderScreen from "../screens/PlaceholderScreen";
 
 export type MainTabsParamList = {
@@ -16,10 +17,6 @@ export type MainTabsParamList = {
 };
 
 const Tabs = createBottomTabNavigator<MainTabsParamList>();
-
-function HomeTab() {
-  return <PlaceholderScreen title="Home" />;
-}
 
 function FlashcardsTab() {
   return <PlaceholderScreen title="Flashcards" />;
@@ -36,7 +33,7 @@ function SettingsTab() {
 export default function MainTabs() {
   return (
     <Tabs.Navigator initialRouteName="Home">
-      <Tabs.Screen name="Home" component={HomeTab} />
+      <Tabs.Screen name="Home" component={HomeScreen} />
       <Tabs.Screen name="Flashcards" component={FlashcardsTab} />
       <Tabs.Screen name="History" component={HistoryTab} />
       <Tabs.Screen name="Settings" component={SettingsTab} />
