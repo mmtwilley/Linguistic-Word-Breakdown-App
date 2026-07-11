@@ -124,6 +124,14 @@
 - [ ] T034 [P] FR-018 audit: grep mobile/src for console.log/console.error paths that could carry tokens or user text; ensure client.ts and auth modules log nothing sensitive
 - [ ] T035 [P] Add a "Mobile app" section to README.md: prerequisites, env setup, run + test commands (pointer to specs/003-mobile-analyze-screen/quickstart.md)
 - [ ] T036 Run the full manual acceptance walkthrough from specs/003-mobile-analyze-screen/quickstart.md against the live local backend; verify SC-001 through SC-006 and record results as notes against this task in specs/003-mobile-analyze-screen/tasks.md (feature-002 precedent)
+  - **Partial walkthrough 2026-07-10 (post-US1, emulator + live backend):**
+    - ✅ US1 core: `점심을 먹었어요` (auto) → "I had lunch." + 점심을/먹었어요 cards with romanization; resubmit replaces result
+    - ✅ Sign-in error UX: wrong password → inline "That email or password doesn't match…", no raw codes anywhere
+    - ✅ FR-006a: override persists across submissions (so well it caused the finding below)
+    - ✅ cmn auto-detect: translation renders, zero cards → bare below translation as expected pre-T030
+    - 🐞 **Backend finding 1**: mismatched language hint (kor text + cmn/lat hint) → `cards=0, confidence=high, issues=[]` — violates 002 contract (should be EMPTY_ANALYSIS + low); hint path skips validation; fix in a later backend feature
+    - 🐞 **Backend finding 2**: expired/invalid Bearer → **HTTP 403, empty body** (no envelope; Spring Security pre-controller, no logs); client correctly synthesizes INTERNAL_ERROR → "Something went wrong on our end". **T024 must trigger refresh on 401 OR 403 regardless of envelope presence**
+    - Not yet checked: 501-char paste block, airplane-mode retry banner, rate-limit message (deferred to full T036 pass)
 - [ ] T037 Constitution compliance review (Principles I–V + shared-contract rule) before merge; confirm no client-side external API calls, tokens only in secure store, envelope opacity, YAGNI held
 
 ---
