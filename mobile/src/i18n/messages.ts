@@ -32,20 +32,21 @@ export function issueMessage(code: IssueCode): string {
   return ISSUE_MESSAGES[code] ?? ISSUE_FALLBACK;
 }
 
-/** Result-level codes render as notices on the result header; all others attach to cards. */
-const RESULT_LEVEL_CODES = new Set<string>([
-  "EMPTY_ANALYSIS",
-  "INPUT_NOT_COVERED",
-  "CARDS_OUT_OF_ORDER",
-  "STAGE_FAILED",
+/** Only codes known to be card-level attach to a card; see isResultLevel. */
+const CARD_LEVEL_CODES = new Set<string>([
+  "MISSING_FIELD",
+  "ROMANIZATION_PASSTHROUGH",
+  "UNKNOWN_POS",
+  "AI_ENTRY_REJECTED",
 ]);
 
 /**
- * Unknown codes are treated as result-level so they surface somewhere visible
- * even when we can't match them to a card.
+ * Display routing (data-model.md): null surface or a known result-level code
+ * ⇒ result-level notice. Unknown codes are also result-level — even with a
+ * surface — so they stay visible when we can't match them to a card.
  */
 export function isResultLevel(code: IssueCode, surface: string | null): boolean {
-  return surface === null || RESULT_LEVEL_CODES.has(code);
+  return surface === null || !CARD_LEVEL_CODES.has(code);
 }
 
 /**
