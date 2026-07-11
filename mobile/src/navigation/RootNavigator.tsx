@@ -8,10 +8,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { useAuth } from "../auth/AuthContext";
 import LoginScreen from "../screens/LoginScreen";
+import RegisterScreen from "../screens/RegisterScreen";
 import MainTabs from "./MainTabs";
 
 export type RootParamList = {
   Login: undefined;
+  Register: undefined;
   Main: undefined;
 };
 
@@ -32,7 +34,20 @@ export default function RootNavigator() {
       {status === "signedIn" ? (
         <Stack.Screen name="Main" component={MainTabs} />
       ) : (
-        <Stack.Screen name="Login" component={LoginScreen} />
+        // Screens take plain callbacks (not navigation props) so they stay
+        // testable without a navigator; the wiring lives here.
+        <>
+          <Stack.Screen name="Login">
+            {({ navigation }) => (
+              <LoginScreen onRegisterPress={() => navigation.navigate("Register")} />
+            )}
+          </Stack.Screen>
+          <Stack.Screen name="Register">
+            {({ navigation }) => (
+              <RegisterScreen onSignInPress={() => navigation.navigate("Login")} />
+            )}
+          </Stack.Screen>
+        </>
       )}
     </Stack.Navigator>
   );

@@ -10,13 +10,14 @@
  * rather than surfacing a fake network error.
  */
 import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { analyze } from "../api/analyze";
 import type { ApiError } from "../api/client";
 import type { AnalysisRequest, AnalysisResult, LanguageHint } from "../api/types";
-import { useAuth } from "../auth/AuthContext";
+import { setDraftProvider, takeDraft } from "../auth/draftStash";
+import { useAuthedFetch } from "../auth/useAuthedFetch";
 import AnalyzeInput from "../components/AnalyzeInput";
 import ErrorBanner from "../components/ErrorBanner";
 import LanguagePicker from "../components/LanguagePicker";
@@ -41,11 +42,22 @@ function errorPlacement(code: string): "input" | "picker" | "banner" {
 }
 
 export default function HomeScreen() {
-  const { getTokens } = useAuth();
-  const [text, setText] = useState("");
-  const [language, setLanguage] = useState<LanguageHint | null>(null);
+  const authedFetch = useAuthedFetch();
+  // Lazy initializer runs exactly once per mount: after a forced re-login
+  // this recovers the draft stashed by the refresh-failure sign-out (T025).
+  const [initialDraft] = useState(takeDraft);
+  const [text, setText] = useState(initialDraft?.text ?? "");
+  const [language, setLanguage] = useState<LanguageHint | null>(initialDraft?.language ?? null);
   const [request, setRequest] = useState<RequestState>({ phase: "idle" });
   const abortRef = useRef<AbortController | null>(null);
+
+  // Keep the stash module able to snapshot the live draft at the moment a
+  // refresh failure kills the session — the screen can't do it itself then,
+  // because the sign-out happens inside useAuthedFetch.
+  useEffect(() => {
+    setDraftProvider(() => ({ text, language }));
+    return () => setDraftProvider(null);
+  }, [text, language]);
 
   // Abort any in-flight request when the tab loses focus or unmounts.
   useFocusEffect(
@@ -58,17 +70,6 @@ export default function HomeScreen() {
   );
 
   const handleSubmit = useCallback(async () => {
-    const accessToken = getTokens()?.accessToken;
-    if (!accessToken) {
-      // Can't happen while signedIn (AuthContext invariant); treated as an
-      // expired session rather than crashing if it ever does.
-      setRequest({
-        phase: "failed",
-        error: { code: "UNAUTHORIZED", message: "", retryable: false },
-      });
-      return;
-    }
-
     const body: AnalysisRequest = { text: text.trim() };
     if (language !== null) {
       body.language = language; // auto = omit the field entirely (FR-006a)
@@ -78,7 +79,10 @@ export default function HomeScreen() {
     abortRef.current = controller;
     setRequest({ phase: "submitting" });
 
-    const result = await analyze(body, accessToken, controller.signal);
+    // authedFetch attaches the Bearer token and transparently refreshes +
+    // retries once on 401/403 (T024); a missing/dead session comes back as
+    // an UNAUTHORIZED failure and the navigator handles the sign-out.
+    const result = await authedFetch((token) => analyze(body, token, controller.signal));
 
     if (controller.signal.aborted) {
       // Blur/unmount cancelled us — discard, don't show a fake failure.
@@ -87,7 +91,7 @@ export default function HomeScreen() {
     }
     abortRef.current = null;
     setRequest(result.ok ? { phase: "success", result: result.data } : { phase: "failed", error: result.error });
-  }, [getTokens, text, language]);
+  }, [authedFetch, text, language]);
 
   const failure = request.phase === "failed" ? request.error : null;
   const placement = failure ? errorPlacement(failure.code) : null;
