@@ -4,6 +4,13 @@ A mobile language-learning application with a Spring Boot backend that breaks do
 
 ## Tech Stack
 
+**Mobile**
+- React Native 0.86 (Expo SDK 57) · TypeScript 6
+- React Navigation v7 (native stack + bottom tabs)
+- expo-secure-store (token storage: Android Keystore / iOS Keychain)
+- Hand-rolled typed `fetch` client (no axios) with error-envelope parsing
+- Jest (jest-expo) + React Native Testing Library
+
 **Backend**
 - Java 25 · Spring Boot 4.1.0
 - Spring Security + JJWT (authentication)
@@ -105,6 +112,29 @@ codes are deterministic for the same input. The full contract, including the nor
 confidence derivation and cache-eligibility rules, is in
 [specs/002-analysis-validation/contracts/validation-api.md](specs/002-analysis-validation/contracts/validation-api.md).
 
+### Mobile App (Phase 3, in progress)
+
+React Native (Expo) app for Android — the first consumer of the backend API.
+
+**Shipped (US1 + US2, merged to main)**
+- **Analyze screen** — enter/paste text (≤500 chars, live counter), optional language
+  override (auto / 한국어 / 日本語 / 中文 / English–Latin), translation + ordered word
+  cards with romanization; null card fields are omitted, not rendered as blanks
+- **Full auth journey** — register (with inline validation and an
+  "email already exists → sign in instead" affordance), sign in, session persists
+  across app restarts, sign out from the Home header
+- **Silent token refresh** — on 401/403 the app performs a single-flight refresh
+  (concurrent failures share one refresh; rotation-safe), retries the original
+  request once, and only forces re-auth when the refresh token itself is rejected
+- **Draft preservation** — text typed on Home survives a forced re-login
+  (kept in memory only, never written to disk)
+- **Error handling** — every backend error code maps to a plain-language message,
+  placed where it belongs (inline at the input, beside the language picker, or in a
+  retryable banner); raw wire codes never reach the screen
+
+**Remaining on the feature branch**: reliability UI (confidence badge, per-card
+warnings, empty-analysis explanation), tab icons and shell polish.
+
 ## Getting Started
 
 ### Prerequisites
@@ -149,6 +179,22 @@ cp .env.example.yml .env.yml
 
 Flyway migrations run automatically on startup.
 
+### 4. Run the mobile app (Android emulator)
+
+Prerequisites: Node.js 20 LTS, Android Studio with a bootable AVD (API 34+).
+
+```powershell
+cd mobile
+copy .env.example .env   # EXPO_PUBLIC_API_URL=http://10.0.2.2:8080
+npm install
+npx expo start           # press "a" to launch on the Android emulator
+```
+
+`10.0.2.2` is the emulator's alias for the host's `localhost`. Cleartext HTTP is
+allowed only for local hosts — the client refuses a non-local API URL that isn't
+`https://`. More detail (and gotchas like OneDrive file locks and emulator clock
+skew) in [specs/003-mobile-analyze-screen/quickstart.md](specs/003-mobile-analyze-screen/quickstart.md).
+
 ## API Overview
 
 All responses use a structured envelope. Errors look like:
@@ -164,12 +210,15 @@ All responses use a structured envelope. Errors look like:
 
 | Method | Path | Description |
 |---|---|---|
-| `POST` | `/api/v1/auth/register` | Create account |
-| `POST` | `/api/v1/auth/login` | Login, get tokens |
-| `POST` | `/api/v1/auth/refresh` | Refresh access token |
-| `POST` | `/api/v1/analyze` | Analyze text, get word cards |
+| `POST` | `/api/auth/register` | Create account — returns `201` + message, **no tokens**; follow with login |
+| `POST` | `/api/auth/login` | Login, get access (15 min) + refresh (30 days) tokens |
+| `POST` | `/api/auth/refresh` | Rotate the token pair (submitted refresh token is invalidated) |
+| `POST` | `/api/analyze` | Analyze text, get word cards (Bearer auth) |
 
-Full request/response contracts are in [specs/001-backend-auth-analyze/contracts/](specs/001-backend-auth-analyze/contracts/).
+Full request/response contracts are in
+[specs/001-backend-auth-analyze/contracts/](specs/001-backend-auth-analyze/contracts/); the
+wire contract as consumed by the mobile app (including live-verified corrections) is in
+[specs/003-mobile-analyze-screen/contracts/backend-api.md](specs/003-mobile-analyze-screen/contracts/backend-api.md).
 
 ## Project Structure
 
@@ -189,14 +238,32 @@ language-app/
 │   │   ├── application.yaml
 │   │   └── db/migration/    # Flyway SQL migrations
 │   └── docker-compose.yml
+├── mobile/
+│   ├── src/
+│   │   ├── api/             # Typed fetch client, wire types, endpoint functions
+│   │   ├── auth/            # AuthContext, secure token storage, silent refresh, draft stash
+│   │   ├── components/      # AnalyzeInput, LanguagePicker, ResultView, WordCardView, ...
+│   │   ├── i18n/            # Plain-language messages for every wire code
+│   │   ├── navigation/      # Root stack (auth ⇄ tabs) + bottom tabs
+│   │   └── screens/         # Home (analyze), Login, Register, placeholders
+│   └── __tests__/           # Jest + React Native Testing Library
 └── specs/                   # Feature specs, plans, and contracts
 ```
 
 ## Running Tests
+
+**Backend** — integration tests use Testcontainers and spin up real PostgreSQL and Redis instances:
 
 ```bash
 cd backend
 ./mvnw test
 ```
 
-Integration tests use Testcontainers and spin up real PostgreSQL and Redis instances.
+**Mobile**:
+
+```powershell
+cd mobile
+npm test           # jest + React Native Testing Library
+npm run typecheck  # tsc --noEmit
+npm run lint
+```
