@@ -55,7 +55,7 @@
 
 ### Implementation for User Story 1
 
-- [ ] T014 [P] [US1] Create the analyze API call in mobile/src/api/analyze.ts: POST /api/analyze with Bearer token, body `{text, language?}` per contract §2, returning AnalysisResult or ErrorEnvelope; accepts an AbortSignal (depends on foundational T005–T009)
+- [x] T014 [P] [US1] Create the analyze API call in mobile/src/api/analyze.ts: POST /api/analyze with Bearer token, body `{text, language?}` per contract §2, returning AnalysisResult or ErrorEnvelope; accepts an AbortSignal (depends on foundational T005–T009) ✅ 2026-07-10 (takes accessToken as a plain arg; T024's useAuthedFetch will own token attachment + refresh later)
 - [ ] T015 [P] [US1] Create mobile/src/components/AnalyzeInput.tsx: multiline paste-friendly input, live character counter, submit disabled when blank/>500 chars (FR-015) or while a request is in flight (FR-012)
 - [ ] T016 [P] [US1] Create mobile/src/components/LanguagePicker.tsx: options auto | 한국어 (kor) | 日本語 (jpn) | 中文 (cmn) | English/Latin (lat); "auto" sends no hint (FR-006a, data-model.md validation rules)
 - [ ] T017 [P] [US1] Create mobile/src/components/WordCardView.tsx: renders surface, lemma, pos, gloss, romanization; null fields are omitted, not shown empty (US1-AS3); `ipa` not rendered this phase
