@@ -91,16 +91,27 @@ describe("RegisterScreen server outcomes", () => {
     expect(onSignInPress).toHaveBeenCalled();
   });
 
-  it("success registers, persists the pair, and signs the user in (US2-AS1)", async () => {
-    fetchMock.mockResolvedValue(
-      jsonResponse(200, { accessToken: "newTok", refreshToken: "newRef", expiresIn: 900 }),
-    );
+  it("success registers (201, no tokens), auto-logs-in, and persists the pair (US2-AS1)", async () => {
+    // Real backend behavior (contract §1 correction 2026-07-11): register
+    // returns 201 + message WITHOUT tokens; only login issues the pair.
+    fetchMock.mockImplementation(async (url: string) => {
+      if (url.endsWith("/api/auth/register")) {
+        return jsonResponse(201, { message: "Account created successfully." });
+      }
+      return jsonResponse(200, { accessToken: "newTok", refreshToken: "newRef", expiresIn: 900 });
+    });
     await renderRegister();
     await fillAndSubmit("new@example.com", "longenough1");
 
-    const [url, init] = fetchMock.mock.calls[0];
-    expect(url).toBe("http://localhost:8080/api/auth/register");
-    expect(JSON.parse(init.body)).toEqual({ email: "new@example.com", password: "longenough1" });
+    const urls = fetchMock.mock.calls.map(([url]) => url);
+    expect(urls).toEqual([
+      "http://localhost:8080/api/auth/register",
+      "http://localhost:8080/api/auth/login",
+    ]);
+    expect(JSON.parse(fetchMock.mock.calls[1][1].body)).toEqual({
+      email: "new@example.com",
+      password: "longenough1",
+    });
 
     // applyTokens persisted the pair — the signedIn flip (and Home landing)
     // follows from this via the root navigator.
@@ -108,5 +119,20 @@ describe("RegisterScreen server outcomes", () => {
       "lingua.auth.tokens",
       JSON.stringify({ accessToken: "newTok", refreshToken: "newRef" }),
     );
+  });
+
+  it("register succeeds but auto-login fails → error + sign-in affordance, nothing persisted", async () => {
+    fetchMock.mockImplementation(async (url: string) => {
+      if (url.endsWith("/api/auth/register")) {
+        return jsonResponse(201, { message: "Account created successfully." });
+      }
+      throw new TypeError("Network request failed");
+    });
+    await renderRegister();
+    await fillAndSubmit("new@example.com", "longenough1");
+
+    expect(await screen.findByText(/Check your connection/)).toBeOnTheScreen();
+    expect(screen.getByText("Sign in instead")).toBeOnTheScreen();
+    expect(secureStore.setItemAsync).not.toHaveBeenCalled();
   });
 });

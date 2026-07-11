@@ -8,8 +8,10 @@ Base URL: `EXPO_PUBLIC_API_URL` (local dev: `http://10.0.2.2:8080` from the Andr
 ## 1. Auth endpoints (`/api/auth`, unauthenticated)
 
 ### POST /api/auth/register
-Request `{ "email": "<valid email>", "password": "<8–128 chars>" }` → **200** `AuthResponse`.
+Request `{ "email": "<valid email>", "password": "<8–128 chars>" }` → **201** `{ "message": "Account created successfully." }` — **no tokens**.
 Errors: `409 EMAIL_ALREADY_EXISTS`, `400 VALIDATION_ERROR` (bad email / password length).
+
+> **Correction 2026-07-11** (verified live during US2 manual test): register does NOT return `AuthResponse` as this contract originally claimed — only login issues a token pair. The mobile RegisterScreen therefore performs a follow-up `POST /api/auth/login` with the same credentials to establish the session.
 
 ### POST /api/auth/login
 Request `{ "email": "...", "password": "..." }` → **200** `AuthResponse`.

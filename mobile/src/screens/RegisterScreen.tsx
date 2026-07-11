@@ -21,7 +21,7 @@ import {
   View,
 } from "react-native";
 
-import { register } from "../api/auth";
+import { login, register } from "../api/auth";
 import { useAuth } from "../auth/AuthContext";
 import { errorMessage } from "../i18n/messages";
 
@@ -73,19 +73,34 @@ export default function RegisterScreen({ onSignInPress }: RegisterScreenProps) {
     setSubmitting(true);
     setServerError(null);
     setEmailTaken(false);
-    const result = await register({ email: email.trim(), password });
-    if (result.ok) {
-      // Persists the pair and flips status to "signedIn"; the root navigator
-      // unmounts this screen and shows the main tabs (Home).
-      await applyTokens({
-        accessToken: result.data.accessToken,
-        refreshToken: result.data.refreshToken,
-      });
+    const trimmedEmail = email.trim();
+    const result = await register({ email: trimmedEmail, password });
+    if (!result.ok) {
+      setServerError(errorMessage(result.error.code, result.error.message));
+      setEmailTaken(result.error.code === "EMAIL_ALREADY_EXISTS");
+      setSubmitting(false);
       return;
     }
-    setServerError(errorMessage(result.error.code, result.error.message));
-    setEmailTaken(result.error.code === "EMAIL_ALREADY_EXISTS");
-    setSubmitting(false);
+
+    // The backend's register returns 201 + a message WITHOUT tokens (verified
+    // live 2026-07-11, contract §1 corrected) — only login issues a token
+    // pair, so a follow-up login establishes the session.
+    const session = await login({ email: trimmedEmail, password });
+    if (!session.ok) {
+      // Account exists but auto sign-in failed (e.g. network blip): send the
+      // user to the sign-in screen rather than a dead end.
+      setServerError(errorMessage(session.error.code, session.error.message));
+      setEmailTaken(true); // reuse the "Sign in instead" affordance
+      setSubmitting(false);
+      return;
+    }
+
+    // Persists the pair and flips status to "signedIn"; the root navigator
+    // unmounts this screen and shows the main tabs (Home).
+    await applyTokens({
+      accessToken: session.data.accessToken,
+      refreshToken: session.data.refreshToken,
+    });
   };
 
   return (

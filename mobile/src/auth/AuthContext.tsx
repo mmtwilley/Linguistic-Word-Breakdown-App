@@ -62,6 +62,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const applyTokens = useCallback(async (tokens: TokenPair) => {
+    // Refuse an incomplete pair outright: persisting it would create a
+    // "signedIn with no session" state (seen live when register returned a
+    // 2xx without tokens). Message carries no token values (FR-018).
+    if (
+      typeof tokens.accessToken !== "string" ||
+      tokens.accessToken.length === 0 ||
+      typeof tokens.refreshToken !== "string" ||
+      tokens.refreshToken.length === 0
+    ) {
+      throw new Error("applyTokens: refusing to persist an incomplete token pair");
+    }
     await saveTokens(tokens); // persist first — see invariant above
     tokensRef.current = tokens;
     setStatus("signedIn");
